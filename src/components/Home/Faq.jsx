@@ -1,6 +1,10 @@
-import React from 'react'
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import ComponentHead from '../ComponentHead'
-import Accordions from './Accordion'
 const faqData = [
     {
         id: 1,
@@ -31,13 +35,28 @@ const faqData = [
 ]
 const Faq = () => {
     return (
-        <section>
+        <section className="pt-0">
             <div className="container">
                 <ComponentHead className="text-start mb-5"
                     heading='Frequently Asked Questions'
                     title=' Find answers to common questions about our astrology services and consultations.'
                 />
-                {faqData.map(faq => <Accordions {...faq} />)}
+                <Accordion
+                    type="single"
+                    collapsible
+                    className="w-full"
+                    defaultValue="item-1"
+                >
+                    {faqData.map(faq =>
+
+                        <AccordionItem value={`item-${faq.id}`}>
+                            <AccordionTrigger className={" cursor-pointer font-semibold text-xl"}>{faq.que}</AccordionTrigger>
+                            <AccordionContent>
+                                {faq.ans}
+                            </AccordionContent>
+                        </AccordionItem>
+                    )}
+                </Accordion>
 
             </div>
         </section>

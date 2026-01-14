@@ -9,7 +9,7 @@ import "swiper/css/navigation"
 import "swiper/css/pagination"
 import { FaArrowLeft, FaArrowRight, FaLeftLong, FaLessThan } from "react-icons/fa6"
 
-const Slider = ({ children }) => {
+const Slider = ({ children , slideCount}) => {
     const prevRef = useRef(null)
     const nextRef = useRef(null)
 
@@ -31,7 +31,7 @@ const Slider = ({ children }) => {
                    bg-secondary text-white shadow-md rounded-full w-10 h-10
                    flex items-center justify-center "
             >
-                <FaArrowRight  />
+                <FaArrowRight />
             </button>
 
             <Swiper
@@ -40,6 +40,7 @@ const Slider = ({ children }) => {
                 loop
                 autoplay={{ delay: 2500 }}
                 pagination={{ clickable: true }}
+           
                 onBeforeInit={(swiper) => {
                     swiper.params.navigation.prevEl = prevRef.current
                     swiper.params.navigation.nextEl = nextRef.current
@@ -51,7 +52,7 @@ const Slider = ({ children }) => {
                 breakpoints={{
                     0: { slidesPerView: 1 },
                     640: { slidesPerView: 2 },
-                    1024: { slidesPerView: 3 },
+                    1024: { slidesPerView: slideCount },
                 }}
             >
                 {children &&

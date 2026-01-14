@@ -63,7 +63,7 @@ export const astrologers = [
 const Astrologers = () => {
 
     return (
-        <section className="pb-0">
+        <section className="py-0">
             <div className="container">
                 <ComponentHead
                     heading="Top Online Astrologers"
@@ -71,7 +71,7 @@ const Astrologers = () => {
                 />
 
                 <div className="relative pt-10">
-                    <Slider >
+                    <Slider slideCount={3} >
                         {astrologers.map((astro) => (
                             <div key={astro.id} className="px-3">
                                 <AstrologerCard astro={astro} />

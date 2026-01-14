@@ -5,6 +5,8 @@ import Counter from '@/components/Home/Counter'
 import Faq from '@/components/Home/Faq'
  
 import Services from '@/components/Home/Services'
+import Testmonial from '@/components/Home/Testmonial'
+import TestmonialCard from '@/components/TestmonialCard'
 import React from 'react'
 
 const Home = () => {
@@ -13,9 +15,11 @@ const Home = () => {
       <Banner />
       <BannerSlider />
       <Services />
-      <Counter />
       <Astrologers />
+      <Counter />
+      <Testmonial />
       <Faq />
+      <BannerSlider />
     </>
   )
 }

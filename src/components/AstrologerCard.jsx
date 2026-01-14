@@ -4,7 +4,7 @@ import { Star, Phone, MessageCircle, User } from "lucide-react"
 
 const AstrologerCard = ({ astro }) => {
   return (
-    <Card className="w-full max-w-md rounded-xl border">
+    <Card className="w-full max-w-md rounded-tl-4xl rounded-br-4xl rounded-bl-0 rounded-tr-0  border">
       <CardContent className="p-4 space-y-4">
 
         {/* Top Section */}
