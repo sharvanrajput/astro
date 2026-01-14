@@ -1,0 +1,95 @@
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Star, Phone, MessageCircle, User } from "lucide-react"
+
+const AstrologerCard = ({ astro }) => {
+  return (
+    <Card className="w-full max-w-md rounded-xl border">
+      <CardContent className="p-4 space-y-4">
+
+        {/* Top Section */}
+        <div className="flex items-start gap-4">
+          <div className="relative">
+            {
+              astro.image ?
+              <img
+                src={astro.image}
+                alt={astro.name}
+                className="w-12 h-12 rounded-full object-cover"
+              /> 
+               : 
+               <User className="w-12 h-12 rounded-full object-cover bg-muted p-2" />
+            }
+            <span
+              className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${astro.online ? "bg-green-500" : "bg-gray-400"
+                }`}
+            />
+          </div>
+
+          <div className="flex-1">
+            <div className="flex items-center justify-between">
+              <h4 className="font-semibold text-lg ">{astro.name}</h4>
+              <Button size="sm" variant="outline"  >
+                + Follow
+              </Button>
+            </div>
+
+            <span className="text-xs! block text-muted-foreground">{astro.languages}</span>
+            <span className="text-xs! block text-muted-foreground">{astro.experience}</span>
+            <span className="text-xs! block text-muted-foreground truncate">
+              {astro.skills}
+            </span>
+
+            <div className="flex items-center gap-1 mt-1 text-xs">
+              <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+              <span className="font-medium">{astro.rating}</span>
+              <span className="text-muted-foreground">
+                | {astro.reviews}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Price Section */}
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-green-600">
+              ₹{astro.price}/Min
+              <span className="ml-2 text-xs text-muted-foreground line-through">
+                ₹{astro.oldPrice}/Min
+              </span>
+            </p>
+            <span className="text-xs text-orange-500 font-medium">
+              FLAT DEAL {astro.price}
+            </span>
+          </div>
+
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!astro.online}
+              className="gap-1 text-xs"
+            >
+              <MessageCircle className="w-4 h-4" />
+              {astro.online ? "Chat" : "Offline"}
+            </Button>
+
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={!astro.online}
+              className="gap-1 text-xs"
+            >
+              <Phone className="w-4 h-4" />
+              {astro.online ? "Call" : "Offline"}
+            </Button>
+          </div>
+        </div>
+
+      </CardContent>
+    </Card>
+  )
+}
+
+export default AstrologerCard
