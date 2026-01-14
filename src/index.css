@@ -157,15 +157,21 @@
   }
 
   body {
-    @apply bg-secondary-foreground text-foreground;
+    @apply bg-secondary-foreground text-foreground overflow-x-hidden;
   }
 
   h1 {
     @apply text-5xl text-secondary
   }
+  h2 {
+    @apply text-4xl text-secondary font-semibold
+  }
+  h3 {
+    @apply md:text-2xl! text-xl text-secondary mb-1
+  }
 
   p {
-    @apply text-lg
+    @apply text-lg!
   }
 
   section {
@@ -191,7 +197,7 @@ h5,
 h6 {
   font-family: "Forum", serif !important;
   line-height: 50px;
-  word-spacing: 10px;
+  word-spacing: 4px;
   letter-spacing: 4px;
 }
 

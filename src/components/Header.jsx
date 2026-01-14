@@ -186,9 +186,7 @@ const Navrow2 = [
   },
 ]
 
-/* ===========================
-   HEADER COMPONENT
-=========================== */
+ 
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState({ row: null, index: null })
@@ -207,7 +205,7 @@ const Header = () => {
           <div className="links xl:block hidden">
 
             {/* ========= ROW 1 ========= */}
-            <ul className="flex justify-end py-2 2xl:gap-3 gap-0">
+            <ul className="flex justify-end pt-2 2xl:gap-3 gap-0">
               {Navrow1.map((ele, index) =>
                 ele.type === "link" ? (
                   <li

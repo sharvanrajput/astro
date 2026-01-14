@@ -1,5 +1,6 @@
 import BannerSlider from '@/components/BannerSlider'
 import Banner from '@/components/Home/banner'
+import Services from '@/components/Home/Services'
 import React from 'react'
 
 const Home = () => {
@@ -7,6 +8,7 @@ const Home = () => {
     <>
       <Banner />
       <BannerSlider />
+      <Services />
     </>
   )
 }

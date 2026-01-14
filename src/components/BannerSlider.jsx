@@ -4,7 +4,7 @@ const BannerSlider = () => {
   const items = ["Free Kundli", "Kundli Matching", "Compatibility", "Horoscopes", "Chat with Astrologer", "Chat with Astrologer"];
 
   return (
-    <div className="overflow-hidden w-full bg-black py-4">
+    <div className="overflow-x-hidden w-full bg-black py-4">
       <div className="flex w-max scrollleft">
         {[...items, ...items, ...items, ...items, ...items, ...items].map((item, index) => (
           <div

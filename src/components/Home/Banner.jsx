@@ -17,7 +17,7 @@ import { Link } from "react-router-dom"
 
 const Banner = () => {
   return (
-    <section className="py-16">
+    <section className="">
       <div className="container">
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
 
@@ -32,13 +32,13 @@ const Banner = () => {
               Your world becomes clear once you understand how the universe influences it.
             </p>
 
-            <div className="grid md:grid-cols-2 grid-cols-1 gap-5">
+            <div className="grid md:grid-cols-2 grid-cols-1 gap-2">
               <Card>
                 <Link>
 
                   <CardHeader className="flex flex-row items-iten   justify-between">
                     <CardTitle className="flex items-center gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                         <Phone className="h-5 w-5 text-white" />
                       </span>
                       <span className="text-base font-semibold">
@@ -46,7 +46,7 @@ const Banner = () => {
                       </span>
                     </CardTitle>
                     <CardAction className={"self-center"}>
-                      <MoveRight className="text-primary" />
+                      <MoveRight className="text-secondary " />
                     </CardAction>
                   </CardHeader>
                 </Link>
@@ -56,7 +56,7 @@ const Banner = () => {
 
                   <CardHeader className="flex flex-row items-iten  justify-between">
                     <CardTitle className="flex items-center gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                         <IoIosChatbubbles className="h-5 w-5 text-white" />
                       </span>
                       <span className="text-base font-semibold">
@@ -66,7 +66,7 @@ const Banner = () => {
                       </span>
                     </CardTitle>
                     <CardAction className={"self-center"}>
-                      <MoveRight className="text-primary" />
+                      <MoveRight className="text-secondary" />
                     </CardAction>
                   </CardHeader>
                 </Link>
@@ -76,7 +76,7 @@ const Banner = () => {
 
                   <CardHeader className="flex flex-row items-iten  justify-between">
                     <CardTitle className="flex items-center gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                         <Phone className="h-5 w-5 text-white" />
                       </span>
                       <span className="text-base font-semibold">
@@ -84,7 +84,7 @@ const Banner = () => {
                       </span>
                     </CardTitle>
                     <CardAction className={"self-center"}>
-                      <MoveRight className="text-primary" />
+                      <MoveRight className="text-secondary" />
                     </CardAction>
                   </CardHeader>
                 </Link>
@@ -93,7 +93,7 @@ const Banner = () => {
                 <Link>
                   <CardHeader className="flex flex-row items-iten  justify-between">
                     <CardTitle className="flex items-center gap-3">
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-primary">
+                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
                         <Phone className="h-5 w-5 text-white" />
                       </span>
                       <span className="text-base font-semibold">
@@ -101,7 +101,7 @@ const Banner = () => {
                       </span>
                     </CardTitle>
                     <CardAction className={"self-center"}>
-                      <MoveRight className="text-primary" />
+                      <MoveRight className="text-secondary" />
                     </CardAction>
                   </CardHeader>
                 </Link>
