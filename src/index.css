@@ -171,7 +171,7 @@
   }
 
   p {
-    @apply text-lg!
+    @apply text-lg
   }
 
   section {
@@ -179,9 +179,7 @@
   }
 
 
-  /* p{
-    @apply text-md
-  } */
+   
 }
 
 body {
@@ -193,6 +191,10 @@ h5,
 h4{
   font-family: "Forum", serif !important;
 
+}
+label{
+  font-family: "Forum", serif !important;
+  font-weight: bold;
 }
 h1,
 h2,

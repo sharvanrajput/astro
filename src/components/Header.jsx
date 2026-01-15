@@ -1,6 +1,6 @@
 import { Link, NavLink } from "react-router-dom"
 import logo from "../assets/logo-light.png"
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import { ScrollArea } from "./ui/scroll-area"
 import { ChevronDown, Menu, MenuIcon, User } from "lucide-react"
 import { Button } from "./ui/button"
@@ -14,8 +14,15 @@ import {
 } from "@/components/ui/sheet"
 import { GiStarShuriken } from "react-icons/gi";
 import UserLogin from "./UserLogin"
-
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 const Navrow1 = [
   {
@@ -87,12 +94,7 @@ const Navrow1 = [
       { label: "Chinese Horoscope", path: "/chinese-astrology" },
     ],
   },
-  {
-    name: "Login",
-    path: "/",
-    type: "btn",
-    hasmenu: false,
-  },
+
 ]
 
 const IndianCityWiseAstrologers = [
@@ -191,6 +193,28 @@ const Navrow2 = [
 
 const Header = () => {
   const [openMenu, setOpenMenu] = useState({ row: null, index: null })
+  const [user, setUser] = useState(null);
+   const getuser = () => {
+    try {
+      localStorage.getItem("user") && setUser(JSON.parse(localStorage.getItem("user")));
+
+    } catch (error) {
+      console.log("Error fetching user data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getuser();
+  }, [])
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  }
+
+  
+  
+
 
   return (
     <header className="py-2 shadow-sm! shadow-primary">
@@ -207,67 +231,96 @@ const Header = () => {
 
             {/* ========= ROW 1 ========= */}
             <ul className="flex justify-end pt-2 2xl:gap-3 gap-0">
-              {Navrow1.map((ele, index) =>
-                ele.type === "link" ? (
-                  <li
-                    key={ele.name}
-                    className="relative xl:text-md! text-sm! font-medium me-1 px-2 py-1 group "
-                    onMouseEnter={() => setOpenMenu({ row: 1, index })}
-                    onMouseLeave={() => setOpenMenu({ row: null, index: null })}
-                  >
-                    {!ele.hasmenu ? (<div className="flex items-center gap-3">
-                      <GiStarShuriken className="text-primary group-hover:rotate-45 transition-all duration-100" />
-                      <NavLink to={ele.path}>  {ele.name}</NavLink>
-                    </div>
-                    ) : (
-                      <span className="cursor-pointer flex items-center gap-1">
-                        <div className="flex items-center gap-3">
-                          <GiStarShuriken className="text-primary group-hover:rotate-45 transition-all duration-100" />
-                          {ele.name}
-                        </div>
-                        <ChevronDown className="size-5 group-hover:rotate-180 transition-all duration-75" />
-                      </span>
-                    )}
+              {Navrow1.map((ele, index) => (
+                <li
+                  key={ele.name}
+                  className="relative xl:text-md! text-sm! font-medium me-1 px-2 py-1 group "
+                  onMouseEnter={() => setOpenMenu({ row: 1, index })}
+                  onMouseLeave={() => setOpenMenu({ row: null, index: null })}
+                >
+                  {!ele.hasmenu ? (<div className="flex items-center gap-3">
+                    <GiStarShuriken className="text-primary group-hover:rotate-45 transition-all duration-100" />
+                    <NavLink to={ele.path}>  {ele.name}</NavLink>
+                  </div>
+                  ) : (
+                    <span className="cursor-pointer flex items-center gap-1">
+                      <div className="flex items-center gap-3">
+                        <GiStarShuriken className="text-primary group-hover:rotate-45 transition-all duration-100" />
+                        {ele.name}
+                      </div>
+                      <ChevronDown className="size-5 group-hover:rotate-180 transition-all duration-75" />
+                    </span>
+                  )}
 
-                    {ele.hasmenu &&
-                      openMenu.row === 1 &&
-                      openMenu.index === index && (
-                        <div className="absolute right-0 top-full z-50 border-b-4 border-primary   overflow-hidden rounded-sm!">
+                  {ele.hasmenu &&
+                    openMenu.row === 1 &&
+                    openMenu.index === index && (
+                      <div className="absolute right-0 top-full z-50 border-b-4 border-primary   overflow-hidden rounded-sm!">
 
 
-                          <ScrollArea className={`h-100
+                        <ScrollArea className={`h-100
                            ${ele.name === "Calculators"
-                              ? "w-80"
-                              : ele.name === "Horoscopes"
-                                ? "w-52"
-                                : "w-auto"
-                            } rounded-sm border border-gray-200 bg-white shadow-md`}
-                          >
-                            <ul>
-                              {ele.menu.map((item) => (
-                                <li
-                                  key={item.label}
-                                  className="px-4 py-2 text-sm flex items-center gap-2 group  font-lighte text-primary hover:text-white hover:font-semibold hover:bg-primary "
-                                >
+                            ? "w-80"
+                            : ele.name === "Horoscopes"
+                              ? "w-52"
+                              : "w-auto"
+                          } rounded-sm border border-gray-200 bg-white shadow-md`}
+                        >
+                          <ul>
+                            {ele.menu.map((item) => (
+                              <li
+                                key={item.label}
+                                className="px-4 py-2 text-sm flex items-center gap-2 group  font-lighte text-primary hover:text-white hover:font-semibold hover:bg-primary "
+                              >
 
-                                  <GiStarShuriken className="" />
-                                  <Link to={item.path}>{item.label}</Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </ScrollArea>
+                                <GiStarShuriken className="" />
+                                <Link to={item.path}>{item.label}</Link>
+                              </li>
+                            ))}
+                          </ul>
+                        </ScrollArea>
+                      </div>
+                    )}
+                </li>
+              ))}
+              <li>
+                {
+                  user?.username ?
+                    <DropdownMenu className="">
+                      <DropdownMenuTrigger>
+                        <Avatar>
+                          <AvatarImage src="https://github.com/shadcn.png" />
+                          <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className={"border-accent  "} align="end">
+                        <div className="flex flex-col items-center gap-1">
+                          <Avatar className={"size-17 mb-0"}>
+                            <AvatarImage  src="https://github.com/shadcn.png" />
+                            <AvatarFallback>CN</AvatarFallback>
+                          </Avatar>
+                          <DropdownMenuLabel className="text-center">
+                          <span className="text-md capitalize font-bold text-secondary">   {user?.username}</span>
+                            <br />
+                            <span className="text-xs">{+911234567895}</span>
+                          </DropdownMenuLabel>
                         </div>
-                      )}
-                  </li>
-                ) : (
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                        <DropdownMenuItem variant="destructive" onClick={logout}>Logout</DropdownMenuItem>
+                        <DropdownMenuItem>Team</DropdownMenuItem>
+                        <DropdownMenuItem>Subscription</DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
-                  <li key={ele.type}>
-                    <UserLogin ele={ele} />
-                  </li>
-                )
+                    :
+                    <UserLogin ele={{ name: "Login" }} getuser={getuser} />
+                }
+              </li>
 
-              )}
             </ul>
+
+
 
             {/* ========= ROW 2 ========= */}
             <ul className="flex justify-end py-2 2xl:gap-3 gap-0">
