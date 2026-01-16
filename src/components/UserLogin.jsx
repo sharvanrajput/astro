@@ -174,7 +174,9 @@ const UserLogin = ({ ele }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="text-center text-secondary">
+            <h2 className="text-2xl">
             {mode === "login" ? "Login" : "Create Account"}
+            </h2>
           </DialogTitle>
           {/* ✅ Accessibility description */}
           <DialogDescription className="sr-only">
@@ -194,7 +196,7 @@ const UserLogin = ({ ele }) => {
         {mode === "login" && (
           <form onSubmit={handleLogin} className="space-y-4 mt-4">
             <div>
-              <Label>Username</Label>
+              <Label className="mb-2" >Username</Label>
               <Input name="username" onChange={handleChange} />
               {errors.fields.username && (
                 <p className="text-red-600 text-sm">
@@ -204,7 +206,7 @@ const UserLogin = ({ ele }) => {
             </div>
 
             <div>
-              <Label>Password</Label>
+              <Label className="mb-2" >Password</Label>
               <Input
                 type="password"
                 name="password"
@@ -252,7 +254,7 @@ const UserLogin = ({ ele }) => {
                 ["confirmPassword", "Confirm Password"],
               ].map(([name, label]) => (
                 <div key={name}>
-                  <Label>{label}</Label>
+                  <Label className="mb-2" >{label}</Label>
                   <Input
                     name={name}
                     type={

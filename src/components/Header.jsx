@@ -1,19 +1,3 @@
-import { Link, NavLink } from "react-router-dom"
-import logo from "../assets/logo-light.png"
-import { use, useEffect, useState } from "react"
-import { ScrollArea } from "./ui/scroll-area"
-import { ChevronDown, Menu, MenuIcon, User } from "lucide-react"
-import { Button } from "./ui/button"
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { GiStarShuriken } from "react-icons/gi";
-import UserLogin from "./UserLogin"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -23,9 +7,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from "@/components/ui/sheet"
 import { logout, userProfile } from "@/redux/slide/UserAuth"
+import { ChevronDown, MenuIcon, User } from "lucide-react"
+import { useEffect, useState } from "react"
+import { GiStarShuriken } from "react-icons/gi"
 import { useDispatch, useSelector } from "react-redux"
+import { Link } from "react-router-dom"
 import { toast } from "react-toastify"
+import logo from "../assets/logo-light.png"
+import { Button } from "./ui/button"
+import { ScrollArea } from "./ui/scroll-area"
+import UserLogin from "./UserLogin"
 
 const Navrow1 = [
   {
@@ -233,6 +232,8 @@ const Header = () => {
     dispatch(logout());
   };
 
+
+
   return (
     <header className="py-2 shadow-sm shadow-primary">
       <div className="container">
@@ -248,13 +249,33 @@ const Header = () => {
               <li
                 key={ele.name}
                 className="relative text-sm font-medium px-2 group"
-                onMouseEnter={() => setOpenMenu({ row: 2, index })}
-                onMouseLeave={() => setOpenMenu({ row: null, index: null })}
+                onMouseEnter={() => ele.hasmenu && setOpenMenu({ row: 2, index })}
+                onMouseLeave={() => ele.hasmenu && setOpenMenu({ row: null, index: null })}
               >
                 <Link to={ele.path} className="flex items-center gap-2">
                   <GiStarShuriken className="text-primary group-hover:rotate-45 transition" />
                   {ele.name}
                 </Link>
+
+                {/* 🔽 DROPDOWN */}
+                {ele.hasmenu &&
+                  openMenu.row === 2 &&
+                  openMenu.index === index && (
+                    <div className="absolute left-0 top-full mt-3 w-[320px] bg-white shadow-xl border rounded-xl p-4 z-50">
+                      <ul className="grid grid-cols-1 gap-2 max-h-[350px] overflow-y-auto">
+                        {ele.menu.map((item) => (
+                          <li key={item.path}>
+                            <Link
+                              to={item.path}
+                              className="block text-sm px-3 py-2 rounded-md hover:bg-primary/10 hover:text-primary transition"
+                            >
+                              {item.label}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
               </li>
             ))}
 

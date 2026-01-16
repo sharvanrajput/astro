@@ -30,11 +30,26 @@ export const userRegister = createAsyncThunk(
         }
     }
 );
+export const userUpdate = createAsyncThunk(
+    "user/updateuser",
+    async (data, thunkApi) => {
+        try {
+            const res = await api.post("/user/update", data);
+            console.log(res.data)
+            return res.data;
+        } catch (error) {
+            return thunkApi.rejectWithValue(
+                error.response?.data?.message || "Registration failed"
+            );
+        }
+    }
+);
 export const userProfile = createAsyncThunk(
     "user/profile",
     async (data, thunkApi) => {
         try {
             const res = await api.get("/user/profile");
+            console.log(res.data.user)
             return res.data.user;
         } catch (error) {
             return thunkApi.rejectWithValue(
@@ -100,6 +115,18 @@ const UserAuthSlice = createSlice({
                 state.user = action.payload;
             })
             .addCase(userProfile.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload;
+            })
+            // update user
+            .addCase(userUpdate.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(userUpdate.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(userUpdate.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
             });

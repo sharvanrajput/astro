@@ -10,7 +10,7 @@ import { FaAnglesRight } from "react-icons/fa6";
 
 const Footer = () => {
   return (
-    <footer className='bg-accent-foreground pt-10'>
+    <footer className='bg-accent-foreground pt-10 pb-0'>
       <div className="container">
         <div>
           <div className="border-b border-gray-500 pb-4 mb-4">
@@ -24,7 +24,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="grid xl:grid-cols-4 lg:grid-cols-3 grid-cols-2 ">
+          <div className="grid xl:grid-cols-4 md:grid-cols-3  grid-cols-1 gap-4 pb-10">
             <div className='space-y-5'>
               <div>
                 <h2 className='text-white border-b-2 border-b-primary/80 inline-block pb-1 font-semibold text-lg '>About Astrology</h2>
