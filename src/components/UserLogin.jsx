@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { User } from "lucide-react";
-import z from "zod";
-import axios from "axios";
+import { z } from "zod";
+import { useDispatch, useSelector } from "react-redux";
+import { userLogin, userRegister } from "@/redux/slide/UserAuth";
 
 /* ---------------- ZOD SCHEMAS ---------------- */
 
@@ -24,7 +25,9 @@ const signupSchema = z
   .object({
     name: z.string().min(2, "Name is required"),
     email: z.string().email("Invalid email address"),
-    phone: z.string().min(10, "Phone must be at least 10 digits"),
+    mobile: z
+      .string()
+      .length(10, "Mobile must be exactly 10 digits"),
     username: z.string().min(3, "Username is required"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(6, "Confirm your password"),
@@ -36,13 +39,19 @@ const signupSchema = z
 
 /* ---------------- COMPONENT ---------------- */
 
-const UserLogin = ({ ele, getuser }) => {
-  const [mode, setMode] = useState("login"); // login | signup
+const UserLogin = ({ ele }) => {
+  const dispatch = useDispatch();
+  const { user, error, loading } = useSelector(
+    (state) => state.userAuth
+  );
+
+  const [mode, setMode] = useState("login");
+  const [open, setOpen] = useState(false);
 
   const [form, setForm] = useState({
     name: "",
     email: "",
-    phone: "",
+    mobile: "",
     username: "",
     password: "",
     confirmPassword: "",
@@ -53,14 +62,32 @@ const UserLogin = ({ ele, getuser }) => {
     form: "",
   });
 
+  /* ---------------- EFFECT ---------------- */
+
+  useEffect(() => {
+    if (user) {
+      setOpen(false);
+      setForm({
+        name: "",
+        email: "",
+        mobile: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [user]);
+
   /* ---------------- HANDLERS ---------------- */
+  useEffect(() => {
+    if (user) setOpen(false);
+  }, [user]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     setForm((prev) => ({ ...prev, [name]: value }));
-
-    // Clear error while typing
     setErrors((prev) => ({
       ...prev,
       fields: { ...prev.fields, [name]: undefined },
@@ -68,51 +95,66 @@ const UserLogin = ({ ele, getuser }) => {
     }));
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const { success, data, error } = loginSchema.safeParse(form);
+    const parsed = loginSchema.safeParse({
+      username: form.username,
+      password: form.password,
+    });
 
-    if (!success) {
+    if (!parsed.success) {
       setErrors({
-        fields: error.flatten().fieldErrors,
+        fields: parsed.error.flatten().fieldErrors,
         form: "Please fix the errors below",
       });
       return;
     }
 
-    setErrors({ fields: {}, form: "" });
-    localStorage.setItem("user", JSON.stringify({ token: "token", ...data }));
-    getuser()
-    console.log("LOGIN DATA 👉", data);
+    try {
+      await dispatch(userLogin(parsed.data)).unwrap();
+      console.log(user);
+    } catch (err) {
+      setErrors({
+        fields: {},
+        form: typeof err === "string" ? err : "Something went wrong",
+      });
+    }
   };
 
-  const handleSignup =   (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
-    const { success, data, error } = signupSchema.safeParse(form);
+    const parsed = signupSchema.safeParse(form);
 
-    if (!success) {
+    if (!parsed.success) {
       setErrors({
-        fields: error.flatten().fieldErrors,
+        fields: parsed.error.flatten().fieldErrors,
         form: "Please fix the errors below",
       });
       return;
     }
 
-    setErrors({ fields: {}, form: "" });
-    
-    console.log("SIGNUP DATA 👉", data);
+    try {
+      await dispatch(userRegister(parsed.data)).unwrap();
+      console.log(user)
+      setMode("login");
+    } catch (err) {
+      setErrors({
+        fields: {},
+        form: typeof err === "string" ? err : "Something went wrong",
+      });
+    }
   };
 
   /* ---------------- UI ---------------- */
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="text-white">
+        <Button className="text-white flex gap-2">
           <User />
-          {ele.name}
+          {ele?.name || "Account"}
         </Button>
       </DialogTrigger>
 
@@ -123,16 +165,17 @@ const UserLogin = ({ ele, getuser }) => {
           </DialogTitle>
         </DialogHeader>
 
-        {/* ---------- GLOBAL ERROR ---------- */}
-        {errors.form && (
-          <p className="text-red-600 text-sm text-center">{errors.form}</p>
+        {(errors.form || error) && (
+          <p className="text-red-600 text-sm text-center">
+            {errors.form || error}
+          </p>
         )}
 
         {/* ---------------- LOGIN ---------------- */}
         {mode === "login" && (
           <form onSubmit={handleLogin} className="space-y-4 mt-4">
             <div>
-              <Label className="mb-2">Username</Label>
+              <Label>Username</Label>
               <Input name="username" onChange={handleChange} />
               {errors.fields.username && (
                 <p className="text-red-600 text-sm">
@@ -142,8 +185,12 @@ const UserLogin = ({ ele, getuser }) => {
             </div>
 
             <div>
-              <Label className="mb-2">Password</Label>
-              <Input type="password" name="password" onChange={handleChange} />
+              <Label>Password</Label>
+              <Input
+                type="password"
+                name="password"
+                onChange={handleChange}
+              />
               {errors.fields.password && (
                 <p className="text-red-600 text-sm">
                   {errors.fields.password[0]}
@@ -151,8 +198,11 @@ const UserLogin = ({ ele, getuser }) => {
               )}
             </div>
 
-            <Button className="w-full bg-secondary text-white">
-              Login
+            <Button
+              className="w-full bg-secondary text-white"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
             </Button>
 
             <p className="text-center text-sm">
@@ -174,77 +224,42 @@ const UserLogin = ({ ele, getuser }) => {
         {mode === "signup" && (
           <form onSubmit={handleSignup} className="mt-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
-              <div>
-                <Label className="mb-2">Name</Label>
-                <Input name="name" onChange={handleChange} />
-                {errors.fields.name && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.name[0]}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label className="mb-2">Email</Label>
-                <Input name="email" onChange={handleChange} />
-                {errors.fields.email && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.email[0]}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label className="mb-2">Phone</Label>
-                <Input name="phone" onChange={handleChange} />
-                {errors.fields.phone && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.phone[0]}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label className="mb-2">Username</Label>
-                <Input name="username" onChange={handleChange} />
-                {errors.fields.username && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.username[0]}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label className="mb-2">Password</Label>
-                <Input
-                  type="password"
-                  name="password"
-                  onChange={handleChange}
-                />
-                {errors.fields.password && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.password[0]}
-                  </p>
-                )}
-              </div>
-
-              <div>
-                <Label className="mb-2">Confirm Password</Label>
-                <Input
-                  type="password"
-                  name="confirmPassword"
-                  onChange={handleChange}
-                />
-                {errors.fields.confirmPassword && (
-                  <p className="text-red-600 text-sm">
-                    {errors.fields.confirmPassword[0]}
-                  </p>
-                )}
-              </div>
+              {[
+                ["name", "Name"],
+                ["email", "Email"],
+                ["mobile", "Mobile"],
+                ["username", "Username"],
+                ["password", "Password"],
+                ["confirmPassword", "Confirm Password"],
+              ].map(([name, label]) => (
+                <div key={name}>
+                  <Label>{label}</Label>
+                  <Input
+                    name={name}
+                    type={
+                      name.includes("password")
+                        ? "password"
+                        : name === "mobile"
+                          ? "tel"
+                          : "text"
+                    }
+                    maxLength={name === "mobile" ? 10 : undefined}
+                    onChange={handleChange}
+                  />
+                  {errors.fields[name] && (
+                    <p className="text-red-600 text-sm">
+                      {errors.fields[name][0]}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
 
-            <Button className="w-full bg-secondary text-white">
-              Sign Up
+            <Button
+              className="w-full bg-secondary text-white"
+              disabled={loading}
+            >
+              {loading ? "Creating..." : "Sign Up"}
             </Button>
 
             <p className="text-center text-sm mt-2">
