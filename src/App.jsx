@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import UpdateUser from './components/Home/UpdateUser'
 import Layout from './layout/Layout'
 import Home from './pages/Home'
@@ -12,20 +12,45 @@ import AstroLogin from "./components/AstroLogin";
 import AstroRegister from "./components/AstroRegistration";
 import HoroscopeDetails from "./components/Horoscopes/HoroscopeDetails";
 import Horoscopes from "./pages/Horoscopes";
+import { useEffect } from "react";
+import AstroLayout from "./layout/AstroLayout";
+import Dashboard from "./pages/AstroDashboard/Dashboard";
+import UpdateAstro from "./pages/AstroDashboard/UpdateAstro";
+import { useDispatch, useSelector } from "react-redux";
+import { GetAllAstrologer } from "./redux/slice/AstroAuth";
 // import BlogPage from "./pages/BlogPage";
 
 
 const App = () => {
+
+  const path = useLocation().pathname;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [path]);
+
+  const fatchAstrologers = async () => {
+    await dispatch(GetAllAstrologer()).unwrap();
+  }
+
+
+  useEffect(() => {
+    fatchAstrologers();
+  }, [dispatch]);
+
   return (
     <>
 
       <Routes>
 
+
+
         <Route path='/' element={<Layout />}>
           <Route path='/' element={<Home />} />
           <Route path='/free-kundli' element={<FreeKundli />} />
           <Route path='/update-user' element={<UpdateUser />} />
-          <Route path='/chat-with-astrologer' element={<ChatWithAstro />} />
+          {/* <Route path='/chat-with-astrologer' element={<ChatWithAstro />} /> */}
           <Route path='/talk-to-astrologer' element={<CallwithAstro />} />
           <Route path='/astro-register' element={<AstroRegister />} />
           <Route path='/horoscopes/:date' element={<Horoscopes />} />
@@ -33,9 +58,17 @@ const App = () => {
           <Route path='/astro-login' element={<AstroLogin />} />
           {/* <Route path="/blogs" element={<BlogPage />} /> */}
           {/* <Route path="/blog/:id" element={<BlogDetails />} /> */}
-        
-
         </Route>
+
+
+
+        <Route path="/astro" element={<AstroLayout />}>
+          <Route path="/astro/dashboard" element={<Dashboard />} />
+          <Route path="/astro/update-astro" element={<UpdateAstro />} />
+        </Route>
+
+
+
       </Routes>
     </>
   )

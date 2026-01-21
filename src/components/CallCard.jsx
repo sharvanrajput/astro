@@ -1,94 +1,161 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Star, IndianRupee, Clock } from 'lucide-react';
+import { Star, IndianRupee, Clock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { IoIosChatbubbles } from "react-icons/io";
+import { IoCall } from "react-icons/io5";
 
-export default function CallCard({ name,
-    specialty,
-    languages,
-    experience,
-    rating,
-    totalOrders,
-    price,
-    originalPrice,
-    image,
-    isOnline }) {
+export default function CallCard({ 
+    call_price, 
+    chat_price, 
+    experience, 
+    expertise = [], 
+    id, 
+    is_online, 
+    languages = [], 
+    name, 
+    profile_image, 
+    rating = 0, 
+    rating_count = 0, 
+    total_call_duration_sec = 0, 
+    total_chat_duration_sec = 0, 
+    username 
+}) {
+    const totalOrders = total_call_duration_sec + total_chat_duration_sec;
+    const displayRating = Math.min(Math.max(Math.round(rating), 0), 5);
 
     return (
-        <Card className="w-full max-w-sm mx-auto hover:shadow-lg transition-shadow">
-            <CardContent className="p-4 sm:p-6">
-                <div className="flex flex-col sm:flex-row gap-4 items-top sm:items-center">
-                    {/* Profile Image */}
-                    <div className="relative flex-shrink-0 mx-auto sm:mx-0">
-                        <Link to="/astro-details">
-                            <img
-                                src={image}
-                                alt={name}
-                                className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover"
-                            />
-                        </Link>
-                        {isOnline && (
-                            <div className="absolute top-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
-                        )}
-                        <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
-                            <div className="flex">
-                                {[...Array(5)].map((_, i) => (
-                                    <Star
-                                        key={i}
-                                        className={`w-4 h-4 ${i < rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'}`}
+        <Card className="w-full max-w-md mx-auto hover:shadow-lg transition-shadow duration-200">
+            <CardContent className="p-4">
+                <div className="flex gap-4">
+                    {/* Profile Section */}
+                    <div className="flex flex-col items-center shrink-0">
+                        <div className="relative mb-2">
+                            <Link to={`/astro-details/${id}`}>
+                                {profile_image ? (
+                                    <img
+                                        src={profile_image}
+                                        alt={name}
+                                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-200"
                                     />
-                                ))}
+                                ) : (
+                                    <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center">
+                                        <User className="w-8 h-8 text-black" />
+                                    </div>
+                                )}
+                            </Link>
+                            {is_online && (
+                                <div className="absolute bottom-0 right-0 w-4 h-4 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
+                            )}
+                        </div>
+                        
+                        {/* Rating Stars */}
+                        <div className="flex gap-0.5 mb-1">
+                            {[...Array(5)].map((_, i) => (
+                                <Star
+                                    key={i}
+                                    className={`w-3.5 h-3.5 ${
+                                        i < displayRating 
+                                            ? 'fill-yellow-400 text-yellow-400' 
+                                            : 'fill-gray-200 text-gray-200'
+                                    }`}
+                                />
+                            ))}
+                        </div>
+                        
+                        {/* Rating Count */}
+                        {rating_count > 0 && (
+                            <div className="text-xs text-gray-500 mb-1">
+                                ({rating_count} reviews)
                             </div>
-                            <div className="text-xs text-gray-600">{totalOrders} orders</div>
+                        )}
+                        
+                        {/* Orders */}
+                        <div className="text-xs text-gray-600 font-medium">
+                            {totalOrders} orders
                         </div>
                     </div>
 
-                    {/* Content */}
-                    <div className="flex-1 text-center sm:text-left w-full">
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
-                            <div>
-                                <h4 className="font-semibold text-secondary">{name}</h4>
-                                <p className="text-sm text-gray-600">{specialty}</p>
-                                <p className="text-xs text-gray-500">{languages}</p>
+                    {/* Content Section */}
+                    <div className="flex-1 min-w-0">
+                        {/* Name and Status */}
+                        <div className="flex items-start justify-between mb-2">
+                            <div className="flex-1">
+                                <Link to={`/astro-details/${id}`} className="hover:underline">
+                                    <h4 className="font-semibold text-secondary text-lg text-gray-900 truncate">
+                                        {name}
+                                    </h4>
+                                </Link>
+                                <p className="text-xs text-gray-500">@{username}</p>
                             </div>
-
-                            {/* Chat Button - Desktop */}
-                            <Button
-                                variant="outline"
-                                className="hidden sm:block text-green-600 border-green-600 hover:bg-green-50"
-                            >
-                                Chat
-                            </Button>
+                            {is_online && (
+                                <span className="px-2 py-0.5 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                                    Online
+                                </span>
+                            )}
                         </div>
 
-                        {/* Rating and Experience */}
+                        {/* Expertise */}
+                        {expertise.length > 0 && (
+                            <p className="text-sm! text-gray-700 mb-1  ">
+                                {expertise.join('\n •  ')}
+                            </p>
+                        )}
 
+                        {/* Languages */}
+                        {languages.length > 0 && (
+                            <p className="text-xs text-gray-500 mb-3">
+                                {languages.join(', ')}
+                            </p>
+                        )}
 
-                        <div className="flex items-center justify-center sm:justify-start gap-1 text-sm text-gray-600 mb-3">
+                        {/* Experience */}
+                        <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
                             <Clock className="w-4 h-4" />
-                            <span>Exp: {experience}</span>
+                            <span>Experience: {experience} {experience === 1 ? 'year' : 'years'}</span>
                         </div>
 
-                        {/* Price */}
-                        <div className="flex items-center justify-center sm:justify-start gap-2">
-                            <div className="flex items-center text-green-600 font-semibold">
-                                <IndianRupee className="w-4 h-4" />
-                                <span>{price}/min</span>
+                        {/* Pricing and Actions */}
+                        <div className="flex items-end justify-between gap-1">
+                            {/* Prices */}
+                            <div className="flex flex-col gap-1">
+                                <div className="flex  items-center gap-1 ">
+                                    <div className="flex items-center text-green-600 font-semibold">
+                                        <IndianRupee className="w-4 h-4" />
+                                        <span>{call_price}</span>
+                                        <span className="text-xs">/min</span>
+                                    </div>
+                                    <span className="text-xs text-gray-500">Call</span>
+                                </div>
+                                <div className="flex  items-center gap-1 ">
+                                    <div className="flex items-center text-blue-600 font-semibold">
+                                        <IndianRupee className="w-4 h-4" />
+                                        <span>{chat_price}</span>
+                                        <span className="text-xs">/min</span>
+                                    </div>
+                                    <span className="text-xs text-gray-500">Chat</span>
+                                </div>
                             </div>
-                            <div className="flex items-center text-gray-400 line-through text-sm">
-                                <IndianRupee className="w-3 h-3" />
-                                <span>{originalPrice}</span>
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-2">
+                                <Button
+                                    size="sm"
+                                    disabled={!is_online}
+                                    className="bg-green-600 hover:bg-green-700 text-white rounded-full h-9 w-9 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <IoCall className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                    size="sm"
+                                    disabled={!is_online}
+                                    className="bg-yellow-500 hover:bg-yellow-600 text-white rounded-full h-9 w-9 p-0 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    <IoIosChatbubbles className="w-4 h-4" />
+                                </Button>
                             </div>
                         </div>
-
-                        {/* Chat Button - Mobile */}
-                        <Button
-                            variant="outline"
-                            className="w-full mt-4 sm:hidden text-green-600 border-green-600 hover:bg-green-50"
-                        >
-                            Chat
-                        </Button>
                     </div>
                 </div>
             </CardContent>

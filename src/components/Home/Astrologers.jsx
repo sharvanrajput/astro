@@ -2,66 +2,18 @@
 import ComponentHead from "../ComponentHead"
 import AstrologerCard from "../AstrologerCard"
 import Slider from "./Slider"
+import { useSelector } from "react-redux"
+import CallCard from "../CallCard"
 
-
-export const astrologers = [
-    {
-        id: 1,
-        name: "Tarot Suman",
-        image: "",
-        languages: "English, Hindi",
-        experience: "3 Years",
-        skills: "Tarot Reading",
-        rating: 4.85,
-        reviews: 265,
-        price: 12,
-        oldPrice: 45,
-        online: false,
-    },
-    {
-        id: 2,
-        name: "Astro Riya",
-        image: "",
-        languages: "Hindi",
-        experience: "5 Years",
-        skills: "Vedic Astrology",
-        rating: 4.9,
-        reviews: 312,
-        price: 15,
-        oldPrice: 50,
-        online: true,
-    },
-    {
-        id: 3,
-        name: "Astro Riya",
-        image: "",
-        languages: "Hindi",
-        experience: "5 Years",
-        skills: "Vedic Astrology",
-        rating: 4.9,
-        reviews: 312,
-        price: 15,
-        oldPrice: 50,
-        online: true,
-    },
-    {
-        id: 4,
-        name: "Astro Riya",
-        image: "",
-        languages: "Hindi",
-        experience: "5 Years",
-        skills: "Vedic Astrology",
-        rating: 4.9,
-        reviews: 312,
-        price: 15,
-        oldPrice: 50,
-        online: true,
-    },
-]
 
 
 const Astrologers = () => {
 
+    const { allastrologers, loading } = useSelector((state) => state.astroAuth);
+    console.log("home Data", allastrologers)
+    if (loading) {
+        return <div className="text-center py-10">Loading...</div>;
+    }
     return (
         <section className="py-0">
             <div className="container">
@@ -72,11 +24,10 @@ const Astrologers = () => {
 
                 <div className="relative pt-10">
                     <Slider slideCount={3} >
-                        {astrologers.map((astro) => (
-                            <div key={astro.id} className="px-3">
-                                <AstrologerCard astro={astro} />
-                            </div>
-                        ))}
+                        {allastrologers
+                            .map((astro) => (
+                                <CallCard key={astro.id} {...astro} />
+                            ))}
                     </Slider>
                 </div>
             </div>

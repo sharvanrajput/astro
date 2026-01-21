@@ -1,107 +1,181 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../baseApi";
 
+/* ================== THUNKS ================== */
 
 export const AstrologerRegister = createAsyncThunk(
-    "astroAuth/register",
-    async (data, thunkApi) => {
-        try {
-            const res = await api.post("/astro/register", data);
-            console.log(res.data)
-            return res.data.astro;
-        } catch (error) {
-            return thunkApi.rejectWithValue(error.response?.data?.message);
-        }
+  "astroAuth/register",
+  async (data, thunkApi) => {
+    try {
+      const res = await api.post("/astro/register", data);
+      return res.data.astro;
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
     }
-)
+  }
+);
+
 export const AstrologerLogin = createAsyncThunk(
-    "astroAuth/login",
-    async (data, thunkApi) => {
-        try {
-            const res = await api.post("/astro/login", data);
-            localStorage.setItem("token", res.data.token);
-            return res.data.astro;
-        } catch (error) {
-            return thunkApi.rejectWithValue(error.response?.data?.message);
-        }
+  "astroAuth/login",
+  async (data, thunkApi) => {
+    try {
+      const res = await api.post("/astro/login", data);
+      localStorage.setItem("token", res.data.token);
+      return res.data.astro;
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
-)
+  }
+);
+
 export const AstrologerProfile = createAsyncThunk(
-    "astroAuth/profile",
-    async (data, thunkApi) => {
-        try {
-            const res = await api.get("/astro/profile", data);
-            return res.data.astro;
-        } catch (error) {
-            return thunkApi.rejectWithValue(error.response?.data?.message);
-        }
+  "astroAuth/profile",
+  async (_, thunkApi) => {
+    try {
+      const res = await api.get("/astro/profile");
+      return res.data.astro;
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Profile fetch failed"
+      );
     }
-)
+  }
+);
+
+export const GetAllAstrologer = createAsyncThunk(
+  "astroAuth/getAllAstrologer",
+  async (_, thunkApi) => {
+    try {
+      const res = await api.get("/astro");
+      const allastro = res.data.data;
+
+      const onlineastro = allastro.filter((astro) => astro.is_online);
+      const offlineastro = allastro.filter((astro) => !astro.is_online);
+      return [...onlineastro, ...offlineastro];
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch astrologers"
+      );
+    }
+  }
+);
+
+export const AstrologerLogout = createAsyncThunk(
+  "astroAuth/logout",
+  async (_, thunkApi) => {
+    try {
+      const res = await api.post("/astro/logout");
+      console.log(res)
+      return res.data.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch astrologers"
+      );
+    }
+  }
+);
+
+/* ================== SLICE ================== */
 
 const initialState = {
-    isAuthenticated: false,
-    astrologer: null,
-    loading: false,
-    error: null,
+  isAuthenticated: !!localStorage.getItem("token"),
+  astrologer: null,
+  allastrologers: [],
+  loading: false,
+  error: null,
 };
 
-const AstroAuthSlide = createSlice({
-    name: "astroAuth",
-    initialState,
-    reducers: {
-        logoutAstro: (state) => {
-            localStorage.removeItem("token");
-            state.astrologer = null;
-        },
+const AstroAuthSlice = createSlice({
+  name: "astroAuth",
+  initialState,
+  reducers: {
+
+    clearAstroError: (state) => {
+      state.error = null;
     },
-    extraReducers: (builder) => {
-        builder
-            .addCase(AstrologerRegister.fulfilled, (state, action) => {
-                state.isAuthenticated = true;
-                state.astrologer = action.payload;
-                state.loading = false;
-                state.error = null;
-            })
-            .addCase(AstrologerRegister.rejected, (state, action) => {
-                state.isAuthenticated = false;
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(AstrologerRegister.pending, (state) => {
-                state.isAuthenticated = false;
-                state.astrologer = null;
-            })
-            .addCase(AstrologerLogin.fulfilled, (state, action) => {
-                state.isAuthenticated = true;
-                state.loading = false;
-                state.error = null;
-            })
-            .addCase(AstrologerLogin.rejected, (state, action) => {
-                state.isAuthenticated = false;
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(AstrologerLogin.pending, (state) => {
-                state.isAuthenticated = false;
-                state.astrologer = null;
-            })
-            .addCase(AstrologerProfile.fulfilled, (state, action) => {
-                state.isAuthenticated = true;
-                state.astrologer = action.payload;
-                state.loading = false;
-                state.error = null;
-            })
-            .addCase(AstrologerProfile.rejected, (state, action) => {
-                state.isAuthenticated = false;
-                state.loading = false;
-                state.error = action.payload;
-            })
-            .addCase(AstrologerProfile.pending, (state) => {
-                state.loading = true;
-                state.isAuthenticated = false;
-                state.astrologer = null;
-            });
-    }
-})
-export const { logoutAstro } = AstroAuthSlide.actions;
-export default AstroAuthSlide.reducer;
+  },
+  extraReducers: (builder) => {
+    builder
+
+      /* ---------- REGISTER ---------- */
+      .addCase(AstrologerRegister.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(AstrologerRegister.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.astrologer = action.payload;
+      })
+      .addCase(AstrologerRegister.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* ---------- LOGIN ---------- */
+      .addCase(AstrologerLogin.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(AstrologerLogin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.astrologer = action.payload;
+      })
+      .addCase(AstrologerLogin.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        state.isAuthenticated = false;
+      })
+
+      /* ---------- PROFILE ---------- */
+      .addCase(AstrologerProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(AstrologerProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = true;
+        state.astrologer = action.payload;
+      })
+      .addCase(AstrologerProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* ---------- GET ALL ---------- */
+      .addCase(GetAllAstrologer.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(GetAllAstrologer.fulfilled, (state, action) => {
+        state.loading = false;
+        state.allastrologers = action.payload;
+      })
+      .addCase(GetAllAstrologer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* ---------- GET ALL ---------- */
+      .addCase(AstrologerLogout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(AstrologerLogout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isAuthenticated = false;
+        state.astrologer = null
+      })
+      .addCase(AstrologerLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+  },
+});
+
+export const { clearAstroError } = AstroAuthSlice.actions;
+export default AstroAuthSlice.reducer;

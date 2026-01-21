@@ -4,7 +4,7 @@ import faviconlogo from "@/assets/favicon.png";
 const HeadWithLogo = ({ time,title }) => {
     return (
         <div className='text-center py-5 md:mb-8 mb-4 container'>
-            <div className='mb-6'>
+            <div className='mb-10'>
                 <h2>{title}</h2>
                { time && <p>Check your {time}'s horoscope</p>}
             </div>

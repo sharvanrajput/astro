@@ -44,7 +44,7 @@ const signupSchema = z
 
 const UserLogin = ({ ele }) => {
   const dispatch = useDispatch();
-  const { user, error, loading } = useSelector((state) => state.userAuth);
+  const { user, error, loading, isLoggedIn } = useSelector((state) => state.userAuth);
 
   const [mode, setMode] = useState("login");
   const [open, setOpen] = useState(false);
@@ -115,10 +115,10 @@ const UserLogin = ({ ele }) => {
     }
 
     try {
-      const token = await dispatch(userLogin(parsed.data)).unwrap();
-      localStorage.setItem("token", token);
-
-      toast.success("You are logged in");
+      await dispatch(userLogin(parsed.data)).unwrap();
+      if (isLoggedIn) {
+        toast.success("You are logged in");
+      }
       setOpen(false);
     } catch (err) {
       setErrors({

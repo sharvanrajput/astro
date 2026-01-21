@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "../baseApi";
+import { success } from "zod";
 
 
 export const userLogin = createAsyncThunk(
@@ -7,8 +8,14 @@ export const userLogin = createAsyncThunk(
     async (data, thunkApi) => {
         try {
             const res = await api.post("/user/login", data);
-            localStorage.setItem("token", res.data.token);
-            return res.data.token;
+            if (res?.data?.user?.role_id === 2) {
+                return thunkApi.rejectWithValue(
+                    "Astrologer cannot login from here"
+                );
+            } else {
+                localStorage.setItem("token", res.data.token);
+                return res.data.token;
+            }
         } catch (error) {
             return thunkApi.rejectWithValue(
                 error.response?.data?.message || "Login failed"
@@ -64,6 +71,7 @@ const initialState = {
     user: null,
     token: localStorage.getItem("token") || null,
     loading: false,
+    isLoggedIn: false,
     error: null,
 };
 
@@ -73,7 +81,9 @@ const UserAuthSlice = createSlice({
     reducers: {
         logout: (state) => {
             localStorage.removeItem("token");
-            state.token = null;
+            state.token = null;;
+            state.isLoggedIn = false;
+            state.user = null;
         },
     },
     extraReducers: (builder) => {
@@ -82,14 +92,18 @@ const UserAuthSlice = createSlice({
             .addCase(userLogin.pending, (state) => {
                 state.loading = true;
                 state.error = null;
+                state.isLoggedIn = false;
+
             })
             .addCase(userLogin.fulfilled, (state, action) => {
                 state.loading = false;
                 state.token = action.payload;
+                state.isLoggedIn = true;
             })
             .addCase(userLogin.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload;
+                state.isLoggedIn = false;
             })
 
             // REGISTER

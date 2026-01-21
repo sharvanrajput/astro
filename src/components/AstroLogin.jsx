@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 // import { AstrologerLogin } from "@/redux/slice/AstroAuth";
 import { Link } from "react-router-dom";
-import { AstrologerLogin, AstrologerProfile } from "@/redux/slice/AstroAuth";
+import { AstrologerLogin, AstrologerProfile, GetAllAstrologer } from "@/redux/slice/AstroAuth";
 
 const AstroLogin = () => {
 
@@ -22,6 +22,9 @@ const AstroLogin = () => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
     };
+    const fatchAstrologers = async () => {
+        await dispatch(GetAllAstrologer()).unwrap();
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -39,6 +42,7 @@ const AstroLogin = () => {
                 await dispatch(AstrologerProfile()).unwrap();
             }, 1000);
             toast.success("Login successful!");
+            await fatchAstrologers();
             setForm({
                 username: "",
                 password: "",

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Forum&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Forum&family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap");
 
 @import "tailwindcss";
 @import "tw-animate-css";
@@ -97,8 +97,6 @@
   --sidebar-ring: oklch(0.7 0.08 45);
 }
 
-
-
 .dark {
   --background: oklch(0.16 0.02 40);
   --foreground: oklch(0.97 0.01 80);
@@ -148,9 +146,6 @@
   --sidebar-ring: oklch(0.78 0.08 45);
 }
 
-
-
-
 @layer base {
   .container {
     @apply mx-auto px-2 md:px-20;
@@ -161,25 +156,22 @@
   }
 
   h1 {
-    @apply text-5xl text-secondary
+    @apply text-5xl text-secondary;
   }
   h2 {
-    @apply text-4xl text-secondary font-semibold
+    @apply text-4xl text-secondary font-semibold;
   }
   h3 {
-    @apply md:text-2xl! text-xl text-secondary mb-1
+    @apply md:text-2xl! text-xl text-secondary mb-1;
   }
 
   p {
-    @apply text-lg
+    @apply text-lg;
   }
 
   section {
-    @apply py-20
+    @apply py-20;
   }
-
-
-   
 }
 
 body {
@@ -188,30 +180,35 @@ body {
 }
 
 h5,
-h4{
+h4 {
   font-family: "Forum", serif !important;
-
 }
-label{
+label {
   font-family: "Forum", serif !important;
   font-weight: bold;
 }
-h1,
+h1 {
+  font-family: "Forum", serif !important;
+  line-height: 45px;
+  word-spacing: 4px;
+  letter-spacing: 4px;
+}
 h2,
 h3,
 h6 {
   font-family: "Forum", serif !important;
-  line-height: 50px;
+  line-height: 40px;
   word-spacing: 4px;
   letter-spacing: 4px;
 }
-.Toastify{
-  padding:0px !important;
-}
-select{
-  width:100% !important;
-}
  
+.Toastify {
+  padding: 0px !important;
+}
+select {
+  width: 100% !important;
+}
+
 @keyframes bannerRotate {
   0% {
     transform: rotate(0deg);
@@ -241,14 +238,23 @@ select{
 .scrollleft {
   animation: infiniteSlide 30s linear infinite;
 }
-.swiper-wrapper{
+.swiper-wrapper {
   margin-bottom: 40px;
 }
-.swiper-pagination-bullet{
+.swiper-pagination-bullet {
   transition: all 0.3s ease-in-out;
 }
-.swiper-pagination-bullet.swiper-pagination-bullet-active{
+.swiper-pagination-bullet.swiper-pagination-bullet-active {
   background-color: var(--secondary) !important;
-  width:30px !important;
+  width: 30px !important;
   border-radius: 10px !important;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

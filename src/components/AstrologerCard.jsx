@@ -1,8 +1,10 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Star, Phone, MessageCircle, User } from "lucide-react"
+import { HiMiniCheckBadge } from "react-icons/hi2";
 
-const AstrologerCard = ({ astro }) => {
+
+const AstrologerCard = ({ call_price, chat_price, daily_available_hours, languages, experience, id, is_online, name, profile_image, rating, rating_count, expertise,total_call_duration_sec, total_chat_duration_sec, username }) => {
   return (
     <Card className="w-full max-w-md rounded-tl-4xl rounded-br-4xl rounded-bl-0 rounded-tr-0  border">
       <CardContent className="p-4 space-y-4">
@@ -11,40 +13,42 @@ const AstrologerCard = ({ astro }) => {
         <div className="flex items-start gap-4">
           <div className="relative">
             {
-              astro.image ?
+              profile_image ?
                 <img
-                  src={astro.image}
-                  alt={astro.name}
+                  src={profile_image}
+                  alt={name}
                   className="w-12 h-12 rounded-full object-cover"
                 />
                 :
                 <User className="w-12 h-12 rounded-full object-cover bg-muted p-2" />
             }
             <span
-              className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${astro.online ? "bg-green-500" : "bg-gray-400"
+              className={`absolute top-0 right-0 w-3 h-3 rounded-full border-2 border-white ${is_online ? "bg-green-500" : "bg-gray-400"
                 }`}
             />
           </div>
 
           <div className="flex-1">
             <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-lg ">{astro.name}</h4>
-              <Button size="sm" variant="outline"  >
-                + Follow
-              </Button>
+             <h4 className="font-semibold text-secondary">{name}</h4>
+              <HiMiniCheckBadge size={25} color="green" />
             </div>
 
-            <span className="text-xs! block text-muted-foreground">{astro.languages}</span>
-            <span className="text-xs! block text-muted-foreground">{astro.experience}</span>
+            {/* <span className="text-xs! block text-muted-foreground">{languages}</span> */}
+            <span className="text-xs! block text-muted-foreground">{experience}</span>
             <span className="text-xs! block text-muted-foreground truncate">
-              {astro.skills}
+              {expertise?.map((exp, index) => (
+                <span key={index}>
+                  {exp}{index < expertise.length - 1 ? ", " : ""}
+                </span>
+              ))}
             </span>
 
             <div className="flex items-center gap-1 mt-1 text-xs">
               <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-              <span className="font-medium">{astro.rating}</span>
+              <span className="font-medium">{rating}</span>
               <span className="text-muted-foreground">
-                | {astro.reviews}
+                | {rating_count} Reviews
               </span>
             </div>
           </div>
@@ -54,34 +58,32 @@ const AstrologerCard = ({ astro }) => {
         <div className="flex items-center justify-between">
           <div className="flex flex-col justify-end ">
             <span className="text-sm font-semibold text-green-600">
-              ₹{astro.price}/Min
+              ₹{call_price}/Min for Call
             </span>
-            <span className=" text-xs text-muted-foreground line-through">
-              ₹{astro.oldPrice}/Min
+            <span className="text-sm font-semibold text-green-600">
+              ₹{chat_price}/Min for Chat
             </span>
-            <span className="text-xs text-orange-500 font-medium">
-              FLAT DEAL {astro.price}
-            </span>
+             
           </div>
 
           <div className="flex  ms-auto gap-2">
             <Button
-              size="sm"              
-              disabled={!astro.online}
+              size="sm"
+              disabled={!is_online}
               className="gap-1 text-xs! bg-orange-500 text-white"
             >
               <MessageCircle className="w-4 h-4" />
-              {astro.online ? "Chat" : "Offline"}
+              {is_online ? "Chat" : "Offline"}
             </Button>
 
             <Button
               size="sm"
-            
-              disabled={!astro.online}
+
+              disabled={!is_online}
               className="gap-1 text-xs! bg-green-500 text-white"
             >
               <Phone className="w-4 h-4" />
-              {astro.online ? "Call" : "Offline"}
+              {is_online ? "Call" : "Offline"}
             </Button>
           </div>
         </div>

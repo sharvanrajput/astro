@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { logout, userProfile } from "@/redux/slice/UserAuth"
 import { ChevronDown, Menu, User } from "lucide-react"
 import { useEffect, useState } from "react"
@@ -13,7 +13,7 @@ import { Button } from "./ui/button"
 import { ScrollArea } from "./ui/scroll-area"
 import UserLogin from "./UserLogin"
 import { getHoroscope } from "@/redux/slice/HoroscopesSlice"
-import { AstrologerProfile, logoutAstro } from "@/redux/slice/AstroAuth"
+import { AstrologerLogout, AstrologerProfile, GetAllAstrologer } from "@/redux/slice/AstroAuth"
 
 
 
@@ -35,8 +35,8 @@ const Header = () => {
       hasmenu: horosType.length > 0,
       menu: horosType
     },
-    { name: "Chat with Astrologer", path: "/chat-with-astrologer", type: "link", hasmenu: false },
-    { name: "Talk to Astrologer", path: "/talk-to-astrologer", type: "link", hasmenu: false },
+    // { name: "Chat with Astrologer", path: "/chat-with-astrologer", type: "link", hasmenu: false },
+    { name: "Talk / Call to Astrologer", path: "/talk-to-astrologer", type: "link", hasmenu: false },
     {
       name: "Shop", path: "", type: "link", hasmenu: true, menu: [
         { label: "Gemstones", path: "/astromall/gemstones" },
@@ -78,8 +78,23 @@ const Header = () => {
       theme: "light",
     });
     dispatch(logout());
-    dispatch(logoutAstro());
   };
+  const fatchAstrologers = async () => {
+    await dispatch(GetAllAstrologer()).unwrap();
+  }
+
+  const astrologerLogout = async () => {
+    toast.success('Astrologer logged out', {
+      position: "top-right",
+      autoClose: 5000,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+    await dispatch(AstrologerLogout()).unwrap();
+    await fatchAstrologers();  
+    localStorage.removeItem("token");
+  }
 
   const getHorescopes = async () => {
     try {
@@ -195,7 +210,10 @@ const Header = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>
+
+                  {astrologer?.role_id === 2 && <DropdownMenuItem onClick={() => navigate('/dashboard')}>Dashboard</DropdownMenuItem>}
+                  {astrologer?.role_id === 3 && <DropdownMenuItem onClick={logoutUser}>Logout</DropdownMenuItem>}
+                  {astrologer?.role_id === 2 && <DropdownMenuItem onClick={astrologerLogout}>AstrologerLogout</DropdownMenuItem>}
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
@@ -213,7 +231,13 @@ const Header = () => {
           </SheetTrigger>
           <SheetContent side="right" className="w-80">
             <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+              <SheetTitle>
+                <SheetClose asChild >
+                  <Link to="/" className="flex items-center space-x-2">
+                    <img src={logo} alt="Logo" className="h-8 w-auto" />
+                  </Link>
+                </SheetClose>
+              </SheetTitle>
             </SheetHeader>
             <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
               <MobileNavSection navItems={mobileMenus} />
@@ -268,9 +292,11 @@ const MobileNavSection = ({ navItems, title }) => {
               onClick={item.hasmenu ? () => toggleMenu(index) : undefined}
             >
               {!item.hasmenu ? (
-                <Link to={item.path} className="flex-1">
-                  {item.name}
-                </Link>
+                <SheetClose asChild >
+                  <Link to={item.path} className="flex-1">
+                    {item.name}
+                  </Link>
+                </SheetClose>
               ) : (
                 <>
                   <span>{item.name}</span>
@@ -290,13 +316,15 @@ const MobileNavSection = ({ navItems, title }) => {
               >
                 <div className="ml-4 mt-1 space-y-1 border-l border-accent pl-2">
                   {item.menu.map((menuItem, menuIndex) => (
-                    <Link
-                      key={menuIndex}
-                      to={menuItem.path}
-                      className="block px-2 py-1.5 text-sm hover:bg-accent rounded-md"
-                    >
-                      {menuItem.label}
-                    </Link>
+                    <SheetClose asChild >
+                      <Link
+                        key={menuIndex}
+                        to={menuItem.path}
+                        className="block px-2 py-1.5 text-sm hover:bg-accent rounded-md"
+                      >
+                        {menuItem.label}
+                      </Link>
+                    </SheetClose>
                   ))}
                 </div>
               </div>
