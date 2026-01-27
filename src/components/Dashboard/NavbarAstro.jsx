@@ -16,14 +16,24 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSidebar } from '../ui/sidebar';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { AstrologerProfile } from "@/redux/slice/AstroAuth";
 
 
 
 const NavbarAstro = () => {
     const { toggleSidebar } = useSidebar();
+    const dispatch = useDispatch()
+    const { astrologer, loading } = useSelector(
+        (state) => state.astroAuth
+    );
 
-   
+    useEffect(() => {
+        if (!astrologer) {
+            dispatch(AstrologerProfile());
+        }
+    }, [astrologer]);
 
     return (
         <nav className="border-b bg-white sticky   top-0 z-50">

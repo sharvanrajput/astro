@@ -3,12 +3,13 @@ import NavbarAstro from '@/components/Dashboard/NavbarAstro';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import React, { useEffect, useMemo, useRef } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 const AstroLayout = () => {
   const navigate = useNavigate();
   const toastShown = useRef(false);
+  const dispatch = useDispatch()
 
   const { astrologer, loading } = useSelector(
     (state) => state.astroAuth
@@ -44,12 +45,16 @@ const AstroLayout = () => {
 
   if (roleId !== 2) return null;
 
+ 
+
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className="w-full">
+      <main className="w-full ">
         <NavbarAstro />
+        <div className="px-5">
         <Outlet />
+        </div>
       </main>
     </SidebarProvider>
   );

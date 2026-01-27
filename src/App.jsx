@@ -3,11 +3,13 @@ import Layout from './layout/Layout';
 
 // import Astrodetails from './pages/AstrologerDetails'
 import { lazy, Suspense, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import AstroLayout from "./layout/AstroLayout";
 import { GetAllAstrologer } from "./redux/slice/AstroAuth";
- 
+import Astrodetails from "./components/Astrodetails";
+
+
 // import BlogPage from "./pages/BlogPage";
 
 const Home = lazy(() => import("./pages/Home"));
@@ -21,9 +23,11 @@ const AstroLogin = lazy(() => import("./components/AstroLogin"));
 const AstroRegister = lazy(() => import("./components/AstroRegistration"));
 const HoroscopeDetails = lazy(() => import("./components/Horoscopes/HoroscopeDetails"));
 const Horoscopes = lazy(() => import("./pages/Horoscopes"));
+const UpdateUser = lazy(() => import("./components/Home/UpdateUser"));
+
 const Dashboard = lazy(() => import("./pages/AstroDashboard/Dashboard"));
 const UpdateAstro = lazy(() => import("./pages/AstroDashboard/UpdateAstro"));
-const UpdateUser = lazy(() => import("./components/Home/UpdateUser"));
+const Wallet = lazy(() => import("./pages/AstroDashboard/Wallet"));
 
 
 
@@ -56,6 +60,7 @@ const App = () => {
             <Route path='/update-user' element={<UpdateUser />} />
             {/* <Route path='/chat-with-astrologer' element={<ChatWithAstro />} /> */}
             <Route path='/talk-to-astrologer' element={<CallwithAstro />} />
+            <Route path='astro-details/:id' element={<Astrodetails />} />
             <Route path='/horoscopes/:date' element={<Horoscopes />} />
             <Route path='/horoscopes/:time/:horos' element={<HoroscopeDetails />} />
             <Route path='/astro-login' element={<AstroLogin />} />
@@ -69,6 +74,7 @@ const App = () => {
           <Route path="/astro" element={<AstroLayout />}>
             <Route path="/astro/dashboard" element={<Dashboard />} />
             <Route path="/astro/update-astro" element={<UpdateAstro />} />
+            <Route path="/astro/wallet" element={<Wallet />} />
           </Route>
 
 

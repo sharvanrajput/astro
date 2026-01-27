@@ -1,4 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, Wallet } from "lucide-react";
 import faviconlogo from "@/assets/favicon.png";
 import {
     Sidebar,
@@ -16,7 +16,7 @@ import { NavLink } from "react-router-dom";
 const items = [
     { title: "Profile", url: "/astro/dashboard", icon: Home },
     { title: "Update Profile", url: "/astro/update-astro", icon: Inbox },
-    { title: "Calendar", url: "#", icon: Calendar },
+    { title: "wallet", url: "/astro/wallet", icon: Wallet },
     { title: "Search", url: "#", icon: Search },
     { title: "Settings", url: "#", icon: Settings },
 ];

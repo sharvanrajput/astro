@@ -1,252 +1,310 @@
 
 
-import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+
+import React from 'react';
+import { User, Mail, Phone, MapPin, Calendar, Briefcase, Star, Languages, Award, Clock, Shield, Globe, MessageSquare, PhoneCall } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import AstroAuthHOC from "./UpdateAstro"
-import {
-  User,
-  Image,
-  Users,
-  Settings,
-  Layers,
-  DollarSign,
-  Rocket,
-  TrendingUp,
-  Edit
-} from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
 import { useSelector } from 'react-redux';
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState('about');
 
-  const { astrologer } = useSelector(state => state.astroAuth)
-  console.log(astrologer)
+  const a = useSelector(state=> state.astroAuth)
+  console.log(a.astrologer)
+  
+  const astrologer = {
+    name: "Sharvan Rajput",
+    username: "sharvan 1234",
+    code: "SHA0005",
+    email: "sharvazxcfasdfnrajput098@gmail.com",
+    mobile: "1235495165",
+    countryCode: "+91",
+    gender: null,
+    dob: null,
+    birthPlace: null,
+    birthTime: null,
+    about: null,
+    address: null,
+    pincode: null,
+    experience: 2,
+    expertise: ['tarot', 'vastu'],
+    languages: ['english', 'bengali'],
+    category: ['love', 'marriage', 'health'],
+    chatPrice: "5.00",
+    callPrice: "5.00",
+    rating: "0.00",
+    ratingCount: 0,
+    isVerified: false,
+    isOnline: true,
+    profileImage: "9a699f6f84.webp",
+    lastSeenAt: "2026-01-23 10:22:31",
+    createdAt: "2026-01-19T12:19:58.000000Z"
+  };
 
-  const stats = [
-    {
-      icon: Layers,
-      label: 'Orders',
-      value: '1,587',
-      increase: true,
-      bgColor: 'bg-blue-50',
-      iconColor: 'text-blue-500'
-    },
-    {
-      icon: DollarSign,
-      label: 'Revenue',
-      value: '46,782',
-      increase: true,
-      bgColor: 'bg-pink-50',
-      iconColor: 'text-pink-500'
-    },
-    {
-      icon: Rocket,
-      label: 'Product sold',
-      value: '1,890',
-      increase: true,
-      bgColor: 'bg-green-50',
-      iconColor: 'text-green-500'
-    }
-  ];
+  const InfoItem = ({ icon: Icon, label, value }) => (
+    <div className="flex items-start gap-3 border-b  py-2.5">
+      <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-muted/50 flex-shrink-0">
+        <Icon className="w-4 h-4 text-muted-foreground" />
+      </div>
+      <div className="flex-1 space-y-0.5 min-w-0">
+        <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
+        <p className="text-sm text-foreground break-words">
+          {value || <span className="text-muted-foreground/60 italic">Not provided</span>}
+        </p>
+      </div>
 
-  const socialLinks = [
-    {
-      name: 'Github',
-      url: 'github.com/apruko',
-      color: 'text-gray-700',
-      bgColor: 'bg-gray-100'
-    },
-    {
-      name: 'Twitter',
-      url: 'twitter.com/apruko.me',
-      color: 'text-blue-400',
-      bgColor: 'bg-blue-50'
-    },
-    {
-      name: 'Linkedin',
-      url: 'linkedin.com/in/apruko',
-      color: 'text-blue-700',
-      bgColor: 'bg-blue-50'
-    },
-    {
-      name: 'My Portfolio',
-      url: 'apruko.com/',
-      color: 'text-red-400',
-      bgColor: 'bg-red-50'
-    }
-  ];
+    </div>
+  );
 
-  const experiences = [
-    {
-      title: 'Lead designer / Developer',
-      company: 'websitename.com',
-      period: '2010-2015',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.'
-    },
-    {
-      title: 'Senior Graphic Designer',
-      company: 'coderthemes.com',
-      period: '2007-2009',
-      description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.'
-    }
-  ];
+  const StatCard = ({ icon: Icon, label, value, color }) => (
+    <div className="flex items-center gap-3 p-4 rounded-lg border bg-card">
+      <div className={`flex items-center justify-center w-12 h-12 rounded-full ${color}`}>
+        <Icon className="w-6 h-6 text-white" />
+      </div>
+      <div>
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="text-xl font-semibold">{value}</p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen p-4 md:p-6">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-          {/* Left Sidebar - Profile Card */}
-          <div className="lg:col-span-4">
-            <Card className="overflow-hidden">
-              <CardContent className="p-6">
-                {/* Profile Image */}
-                <div className="relative w-24 h-24 mx-auto mb-4">
-                  <Avatar className="w-24 h-24">
-                    <AvatarImage src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop" alt="Profile" />
-                    <AvatarFallback>PC</AvatarFallback>
-                  </Avatar>
-                  <div className="absolute top-0 right-0 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center cursor-pointer hover:bg-blue-600">
-                    <Edit className="w-3 h-3 text-white" />
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <Card className="border-0 shadow-lg bg-gradient-to-br from-white to-slate-50/50">
+          <CardHeader className="pb-4">
+            <div className="flex flex-col sm:flex-row items-start gap-6">
+              <div className="relative group">
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full blur opacity-25 group-hover:opacity-40 transition"></div>
+                <Avatar className="relative w-28 h-28 border-4 border-white shadow-xl">
+                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${astrologer?.name}`} />
+                  <AvatarFallback className="text-3xl font-semibold bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+                    {astrologer?.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                {astrologer?.isOnline && (
+                  <span className="absolute bottom-2 right-2 flex h-5 w-5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-5 w-5 bg-green-500 border-4 border-white shadow-lg"></span>
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 space-y-4 w-full">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <h1 className="text-3xl font-bold tracking-tight">{astrologer?.name}</h1>
+                      {astrologer?.isVerified && (
+                        <Badge className="bg-emerald-500 hover:bg-emerald-600">
+                          <Shield className="w-3 h-3 mr-1" />
+                          Verified
+                        </Badge>
+                      )}
+                      {astrologer?.isOnline && (
+                        <Badge className="bg-green-500 text-white hover:bg-green-600">
+                          <div className="w-2 h-2 bg-white rounded-full mr-0.5 animate-pulse"></div>
+                          Online
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <span className="text-sm">@{astrologer?.username}</span>
+                      <span className="text-xs">•</span>
+                      <span className="text-sm font-mono">{astrologer?.code}</span>
+                    </div>
                   </div>
+
+                 
                 </div>
 
-                {/* Name and Title */}
-                <div className="text-center mb-6">
-                  <h2 className="text-xl font-bold text-gray-900">Petey Cruiser</h2>
-                  <p className="text-sm text-gray-500">Web Designer</p>
+                <div className="flex gap-2 flex-wrap">
+                  {astrologer?.expertise.map((exp) => (
+                    <Badge key={exp} variant="secondary" className="capitalize font-medium">
+                      {exp}
+                    </Badge>
+                  ))}
                 </div>
 
-                {/* Bio Section */}
-                <div className="mb-6">
-                  <h3 className="font-semibold text-gray-900 mb-2">Bio</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">
-                    pleasure rationally encounter but because pursue consequences that are extremely painful or which toil and pain can procure him some great pleasure..{' '}
-                    <button className="text-blue-500 hover:underline">More</button>
-                  </p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <StatCard
+                    icon={Star}
+                    label="Total"
+                    value={`${astrologer?.rating}/5.0`}
+                    color="bg-gradient-to-br from-amber-400 to-orange-500"
+                  />
+                  <StatCard
+                    icon={MessageSquare}
+                    label="Chat Price"
+                    value={`₹${astrologer?.chatPrice}/min`}
+                    color="bg-gradient-to-br from-blue-500 to-cyan-500"
+                  />
+                  <StatCard
+                    icon={PhoneCall}
+                    label="Call Price"
+                    value={`₹${astrologer?.callPrice}/min`}
+                    color="bg-gradient-to-br from-green-500 to-emerald-500"
+                  />
                 </div>
-
-
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Right Content */}
-          <div className="lg:col-span-8">
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-              {stats.map((stat, index) => (
-                <Card key={index}>
-                  <CardContent className="p-4 ">
-                    <div className="flex items-center justify-between">
-                      <div className={`${stat.bgColor} p-3 rounded-full`}>
-                        <stat.icon className={`w-4 h-4 ${stat.iconColor}`} />
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <div className="text-sm text-gray-500 mb-1">{stat.label}</div>
-                      <div className="flex items-center justify-between">
-                        <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                        {stat.increase && (
-                          <div className="flex items-center text-xs text-green-500">
-                            <TrendingUp className="w-3 h-3 mr-1" />
-                            increase
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+              </div>
             </div>
+          </CardHeader>
+        </Card>
 
-            {/* Tabs Section */}
-            <Card>
-              <CardContent className="p-0">
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                  <div className="border-b bg-gray-50">
-                    <TabsList className="w-full justify-start rounded-none bg-transparent p-0 h-auto">
-                      <TabsTrigger
-                        value="about"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white px-6 py-4 text-xs font-medium"
-                      >
-                        <User className="w-4 h-4 mr-2" />
-                        ABOUT ME
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="gallery"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white px-6 py-4 text-xs font-medium"
-                      >
-                        <Image className="w-4 h-4 mr-2" />
-                        GALLERY
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="friends"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white px-6 py-4 text-xs font-medium"
-                      >
-                        <Users className="w-4 h-4 mr-2" />
-                        FRIENDS
-                      </TabsTrigger>
-                      <TabsTrigger
-                        value="settings"
-                        className="rounded-none border-b-2 border-transparent data-[state=active]:border-blue-500 data-[state=active]:bg-white px-6 py-4 text-xs font-medium"
-                      >
-                        <Settings className="w-4 h-4 mr-2" />
-                        SETTINGS
-                      </TabsTrigger>
-                    </TabsList>
-                  </div>
+        <div className="grid lg:grid-cols-2 gap-6">
+          <Card className="shadow-md borde pt-0 overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b pb-0! pt-2  bg-primary">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-2 rounded-lg bg-blue-100">
+                  <User className="w-5 h-5 text-blue-600" />
+                </div>
+                Personal Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="">
+              <div className="space-y-1 grid grid-cols-2">
 
-                  <TabsContent value="about" className="p-6 mt-0">
-                    {/* Bio Data */}
-                    <div className="mb-8">
-                      <h3 className="font-semibold text-gray-900 mb-4 text-sm">BIO DATA</h3>
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        Hi I'm Petey Cruiser,has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt.Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim.
-                      </p>
-                    </div>
+                <InfoItem icon={User} label="Full Name" value={astrologer?.name} />
+                <InfoItem icon={User} label="Username" value={astrologer?.username} />
+                <InfoItem icon={User} label="Gender" value={astrologer?.gender} />
+                <InfoItem icon={Calendar} label="Date of Birth" value={astrologer?.dob} />
+                <InfoItem icon={MapPin} label="Birth Place" value={astrologer?.birthPlace} />
+                <InfoItem icon={Clock} label="Birth Time" value={astrologer?.birthTime} />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-md borde pt-0 overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b pb-0! pt-2  bg-primary">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-2 rounded-lg bg-cyan-100">
+                  <Briefcase className="w-5 h-5 text-cyan-600" />
+                </div>
+                Professional Details
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="">
+              <div className="space-y-1 grid md:grid-cols-2">
+                <InfoItem
+                  icon={Briefcase}
+                  label="Experience"
+                  value={astrologer?.experience ? `${astrologer?.experience} years` : null}
+                />
+                <InfoItem
+                  icon={Award}
+                  label="Expertise"
+                  value={astrologer?.expertise.map(e => e.charAt(0).toUpperCase() + e.slice(1)).join(', ')}
+                />
+                <InfoItem
+                  icon={Languages}
+                  label="Languages"
+                  value={astrologer?.languages.map(l => l.charAt(0).toUpperCase() + l.slice(1)).join(', ')}
+                />
+                <InfoItem
+                  icon={Star}
+                  label="Specialization"
+                  value={astrologer?.category.map(c => c.charAt(0).toUpperCase() + c.slice(1)).join(', ')}
+                />
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="shadow-md borde pt-0 overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b pb-0! pt-2  bg-primary">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-2 rounded-lg bg-green-100">
+                  <Mail className="w-5 h-5 text-green-600" />
+                </div>
+                Contact Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=" ">
+              <div className="space-y-1">
+                <InfoItem icon={Mail} label="Email" value={astrologer?.email} />
+                <InfoItem
+                  icon={Phone}
+                  label="Mobile"
+                  value={astrologer?.mobile ? `${astrologer?.countryCode} ${astrologer?.mobile}` : null}
+                />
+                <InfoItem icon={MapPin} label="Address" value={astrologer?.address} />
+                <InfoItem icon={MapPin} label="Pincode" value={astrologer?.pincode} />
+              </div>
+            </CardContent>
+          </Card>
 
-                    {/* Experience */}
-                    <div>
-                      <h3 className="font-semibold text-gray-900 mb-4 text-sm">EXPERIENCE</h3>
-                      <div className="space-y-6">
-                        {experiences.map((exp, index) => (
-                          <div key={index}>
-                            <h4 className="text-blue-500 font-medium mb-1">{exp.title}</h4>
-                            <p className="text-sm text-gray-900 mb-1">{exp.company}</p>
-                            <p className="text-sm font-semibold text-gray-900 mb-2">{exp.period}</p>
-                            <p className="text-sm text-gray-600 leading-relaxed">{exp.description}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
 
-                  <TabsContent value="gallery" className="p-6 mt-0">
-                    <div className="text-center py-12 text-gray-500">
-                      Gallery content goes here
-                    </div>
-                  </TabsContent>
 
-                  <TabsContent value="friends" className="p-6 mt-0">
-                    <div className="text-center py-12 text-gray-500">
-                      Friends list goes here
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="settings" className="p-6 mt-0">
-                    <div className="text-center py-12 text-gray-500">
-                      Settings panel goes here
-                    </div>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="shadow-md borde pt-0 overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+            <CardHeader className="border-b pb-0! pt-2  bg-primary">
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <div className="p-2 rounded-lg bg-amber-100">
+                  <Star className="w-5 h-5 text-amber-600" />
+                </div>
+                Performance Metrics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className=" ">
+              <div className="space-y-1">
+                <InfoItem
+                  icon={Star}
+                  label="Overall Rating"
+                  value={`${astrologer?.rating} out of 5.0`}
+                />
+                <InfoItem
+                  icon={Star}
+                  label="Total Reviews"
+                  value={astrologer?.ratingCount.toString()}
+                />
+                <InfoItem
+                  icon={Clock}
+                  label="Last Active"
+                  value={new Date(astrologer?.lastSeenAt).toLocaleString('en-US', {
+                    dateStyle: 'medium',
+                    timeStyle: 'short'
+                  })}
+                />
+                <InfoItem
+                  icon={Calendar}
+                  label="Joined On"
+                  value={new Date(astrologer?.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        <Card className="shadow-md borde pt-0 overflow-hidden border-gray-200 hover:shadow-lg transition-shadow">
+          <CardHeader className="border-b pb-0! pt-2  bg-primary">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <div className="p-2 rounded-lg bg-slate-100">
+                <Globe className="w-5 h-5 text-slate-600" />
+              </div>
+              About
+            </CardTitle>
+            <CardDescription>Professional background and expertise</CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {astrologer?.about ? (
+              <p className="text-sm text-foreground leading-relaxed">{astrologer?.about}</p>
+            ) : (
+              <div className="flex flex-col items-center justify-center py-12 text-center">
+                <div className="p-4 rounded-full bg-slate-100 mb-4">
+                  <Globe className="w-8 h-8 text-muted-foreground" />
+                </div>
+                <p className="text-sm text-muted-foreground">No information provided yet</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">The astrologer? hasn't added their bio</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
 }
+
 export default Dashboard;
