@@ -79,6 +79,20 @@ export const AstrologerLogout = createAsyncThunk(
     }
   }
 );
+export const AstrologerUpdate = createAsyncThunk(
+  "astroAuth/update",
+  async (data, thunkApi) => {
+    try {
+      const res = await api.post("/astro/update", data);
+      console.log(res)
+      return res.data.data;
+    } catch (error) {
+      return thunkApi.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch astrologers"
+      );
+    }
+  }
+);
 
 /* ================== SLICE ================== */
 
@@ -172,6 +186,19 @@ const AstroAuthSlice = createSlice({
         state.astrologer = null
       })
       .addCase(AstrologerLogout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      /* ---------- update Astrologer ---------- */
+      .addCase(AstrologerUpdate.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(AstrologerUpdate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(AstrologerUpdate.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

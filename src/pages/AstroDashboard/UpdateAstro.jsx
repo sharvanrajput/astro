@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AstrologerProfile, AstrologerUpdate } from '@/redux/slice/AstroAuth';
 
 // Move FormField component OUTSIDE
 const FormField = ({ label, name, type = 'text', placeholder, icon: Icon, required = false, className = '', value, onChange }) => (
@@ -26,6 +27,7 @@ const FormField = ({ label, name, type = 'text', placeholder, icon: Icon, requir
       placeholder={placeholder}
       value={type !== "date" ? value : new Date().toISOString().split("T")[0]}
       onChange={onChange}
+      lang="en-GB"
       className={cn("border-slate-200 focus:border-indigo-400 focus:ring-indigo-200", className)}
     />
   </div>
@@ -93,7 +95,8 @@ const MultiSelect = ({ options, selected, setSelected, label, icon: Icon, maxSel
 
 function UpdateAstro() {
   const { astrologer, loading } = useSelector((state) => state.astroAuth);
-
+  const role = localStorage.getItem("role_id")
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     name: '',
     username: '',
@@ -143,6 +146,7 @@ function UpdateAstro() {
       setSelectedLanguages(astrologer.languages || []);
       setSelectedCategories(astrologer.category || []);
       console.log(formData?.dob)
+      console.log(role)
     }
   }, [astrologer]);
 
@@ -151,7 +155,7 @@ function UpdateAstro() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const updatedData = {
       name: formData.name,
       username: formData.username,
@@ -173,11 +177,14 @@ function UpdateAstro() {
       category: selectedCategories,
     };
 
-    console.log('=== UPDATED PROFILE DATA ===');
-    console.log(updatedData);
-    console.log('=== ORIGINAL ASTROLOGER DATA ===');
-    console.log(astrologer);
-    alert('Profile updated successfully! Check console for data.');
+    try {
+      await dispatch(AstrologerUpdate(updatedData)).unwrap()
+      await dispatch(AstrologerProfile()).unwrap()
+      console.log(updatedData);
+    } catch (error) {
+    }
+
+
   };
 
   const handleCancel = () => {
@@ -188,7 +195,7 @@ function UpdateAstro() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-1  items-center justify-center">
         <div className="text-center">Loading profile...</div>
       </div>
     );
@@ -222,7 +229,7 @@ function UpdateAstro() {
             <CardContent className="pt-6 p-0">
               <div className="flex items-center gap-4">
                 <Avatar className="w-20 h-20 border-4 border-primary/20">
-                  <AvatarImage src={astrologer?.profile_image} />
+                  <AvatarImage src={astrologer?.profile_image } />
                   <AvatarFallback className="bg-gradient-to-br from-primary to-orange-500 text-white text-2xl">
                     {formData.name.charAt(0) || 'A'}
                   </AvatarFallback>
@@ -241,12 +248,12 @@ function UpdateAstro() {
             <CardHeader className="  bg-primary/70 py-2">
               <CardTitle className="flex items-center gap-2">
                 <User className="w-5 h-5 text-primary-forground" />
-                Personal & Birth Details
+                Personal
               </CardTitle>
               <CardDescription>Your core identity and cosmic entry information</CardDescription>
             </CardHeader>
             <CardContent className="  space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <FormField
                   label="Full Name"
                   name="name"
@@ -265,51 +272,54 @@ function UpdateAstro() {
                   value={formData.username}
                   onChange={handleInputChange}
                 />
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
+                    <User className="w-4 h-4 text-slate-500" />
+                    Gender
+                  </Label>
+                  <Select value={formData.gender} onValueChange={(v) => setFormData((p) => ({ ...p, gender: v }))}>
+                    <SelectTrigger className="border-slate-200 w-full focus:border-indigo-400 focus:ring-indigo-200">
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
 
-              <div className="space-y-2">
-                <Label className="flex items-center gap-2 text-sm font-medium text-slate-700">
-                  <User className="w-4 h-4 text-slate-500" />
-                  Gender
-                </Label>
-                <Select value={formData.gender} onValueChange={(v) => setFormData((p) => ({ ...p, gender: v }))}>
-                  <SelectTrigger className="border-slate-200 focus:border-indigo-400 focus:ring-indigo-200">
-                    <SelectValue placeholder="Select gender" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  label="Date of Birth"
-                  name="dob"
-                  type="date"
-                  icon={Calendar}
-                  value={formData.dob}
-                  onChange={handleInputChange}
-                />
-                <FormField
-                  label="Birth Place"
-                  name="birthPlace"
-                  placeholder="City, State"
-                  icon={MapPin}
-                  value={formData.birthPlace}
-                  onChange={handleInputChange}
-                />
-                <FormField
-                  label="Birth Time"
-                  name="birthTime"
-                  type="time"
-                  icon={Clock}
-                  value={formData.birthTime}
-                  onChange={handleInputChange}
-                />
-              </div>
+
+              {role != 2 &&
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <FormField
+                    label="Date of Birth"
+                    name="dob"
+                    type="date"
+                    icon={Calendar}
+                    value={formData.dob}
+                    onChange={handleInputChange}
+                  />
+                  <FormField
+                    label="Birth Place"
+                    name="birthPlace"
+                    placeholder="City, State"
+                    icon={MapPin}
+                    value={formData.birthPlace}
+                    onChange={handleInputChange}
+                  />
+                  <FormField
+                    label="Birth Time"
+                    name="birthTime"
+                    type="time"
+                    icon={Clock}
+                    value={formData.birthTime}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              }
             </CardContent>
           </Card>
 
@@ -395,26 +405,7 @@ function UpdateAstro() {
                 onChange={handleInputChange}
               />
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
-                  label="Chat Price (per min)"
-                  name="chatPrice"
-                  type="number"
-                  placeholder="10"
-                  icon={Shield}
-                  value={formData.chatPrice}
-                  onChange={handleInputChange}
-                />
-                <FormField
-                  label="Call Price (per min)"
-                  name="callPrice"
-                  type="number"
-                  placeholder="20"
-                  icon={Phone}
-                  value={formData.callPrice}
-                  onChange={handleInputChange}
-                />
-              </div>
+              
 
               <MultiSelect
                 options={expertiseOptions}
@@ -491,7 +482,7 @@ function UpdateAstro() {
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

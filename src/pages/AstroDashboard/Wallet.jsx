@@ -38,8 +38,8 @@ function WalletDashboard() {
     });
   };
 
-  const StatCard = ({ icon: Icon, title, value, subtitle, trend, colorClass }) => (
-    <Card className="overflow-hidden">
+  const StatCard = ({ icon: Icon, title, value, subtitle, trend, colorClass, borderColor }) => (
+    <Card className={`overflow-hidden ${borderColor}`}>
       <CardContent className="p-6">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
@@ -121,30 +121,34 @@ function WalletDashboard() {
             title="Total Earned"
             value={formatCurrency(walletData.total_earned)}
             colorClass="text-green-600"
+            borderColor={'border-green-600'}
           />
           <StatCard
             icon={TrendingDown}
             title="Total Withdrawn"
             value={formatCurrency(walletData.total_withdrawn)}
             colorClass="text-orange-600"
+            borderColor={'border-orange-600'}
           />
           <StatCard
             icon={DollarSign}
             title="Total Added"
             value={formatCurrency(walletData.total_added)}
             colorClass="text-blue-600"
+            borderColor={'border-blue-600'}
           />
           <StatCard
             icon={ArrowDownRight}
             title="Total Spent"
             value={formatCurrency(walletData.total_spent)}
             colorClass="text-red-600"
+            borderColor={'border-red-600'}
           />
         </div>
 
         {/* Service Usage */}
         <div className="grid lg:grid-cols-2 gap-6">
-          <Card className={"border-2 border-primary/30"}>
+          <Card className={"border-2 border-green-300"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-green-600" />
@@ -165,7 +169,7 @@ function WalletDashboard() {
               />
               <InfoRow
                 label="Average Per Minute"
-                value={walletData.total_call_minutes > 0 
+                value={walletData.total_call_minutes > 0
                   ? formatCurrency((parseFloat(walletData.total_call_spent) / walletData.total_call_minutes).toFixed(2))
                   : '₹0.00'}
                 icon={TrendingUp}
@@ -194,7 +198,7 @@ function WalletDashboard() {
               />
               <InfoRow
                 label="Average Per Minute"
-                value={walletData.total_chat_minutes > 0 
+                value={walletData.total_chat_minutes > 0
                   ? formatCurrency((parseFloat(walletData.total_chat_spent) / walletData.total_chat_minutes).toFixed(2))
                   : '₹0.00'}
                 icon={TrendingUp}
@@ -258,4 +262,4 @@ function WalletDashboard() {
   );
 }
 
-export default WalletDashboard ;
+export default WalletDashboard;

@@ -12,37 +12,37 @@ import { useSelector } from 'react-redux';
 
 function Dashboard() {
 
-  const a = useSelector(state=> state.astroAuth)
-  console.log(a.astrologer)
-  
-  const astrologer = {
-    name: "Sharvan Rajput",
-    username: "sharvan 1234",
-    code: "SHA0005",
-    email: "sharvazxcfasdfnrajput098@gmail.com",
-    mobile: "1235495165",
-    countryCode: "+91",
-    gender: null,
-    dob: null,
-    birthPlace: null,
-    birthTime: null,
-    about: null,
-    address: null,
-    pincode: null,
-    experience: 2,
-    expertise: ['tarot', 'vastu'],
-    languages: ['english', 'bengali'],
-    category: ['love', 'marriage', 'health'],
-    chatPrice: "5.00",
-    callPrice: "5.00",
-    rating: "0.00",
-    ratingCount: 0,
-    isVerified: false,
-    isOnline: true,
-    profileImage: "9a699f6f84.webp",
-    lastSeenAt: "2026-01-23 10:22:31",
-    createdAt: "2026-01-19T12:19:58.000000Z"
-  };
+  const { astrologer } = useSelector(state => state.astroAuth)
+  // console.log(a.astrologer)
+
+  // const astrologer = {
+  //   name: "Sharvan Rajput",
+  //   username: "sharvan 1234",
+  //   code: "SHA0005",
+  //   email: "sharvazxcfasdfnrajput098@gmail.com",
+  //   mobile: "1235495165",
+  //   countryCode: "+91",
+  //   gender: null,
+  //   dob: null,
+  //   birthPlace: null,
+  //   birthTime: null,
+  //   about: null,
+  //   address: null,
+  //   pincode: null,
+  //   experience: 2,
+  //   expertise: ['tarot', 'vastu'],
+  //   languages: ['english', 'bengali'],
+  //   category: ['love', 'marriage', 'health'],
+  //   chatPrice: "5.00",
+  //   callPrice: "5.00",
+  //   rating: "0.00",
+  //   ratingCount: 0,
+  //   isVerified: false,
+  //   isOnline: true,
+  //   profileImage: "9a699f6f84.webp",
+  //   lastSeenAt: "2026-01-23 10:22:31",
+  //   createdAt: "2026-01-19T12:19:58.000000Z"
+  // };
 
   const InfoItem = ({ icon: Icon, label, value }) => (
     <div className="flex items-start gap-3 border-b  py-2.5">
@@ -79,9 +79,9 @@ function Dashboard() {
             <div className="flex flex-col sm:flex-row items-start gap-6">
               <div className="relative group">
                 <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-full blur opacity-25 group-hover:opacity-40 transition"></div>
-                <Avatar className="relative w-28 h-28 border-4 border-white shadow-xl">
-                  <AvatarImage src={`https://api.dicebear.com/7.x/initials/svg?seed=${astrologer?.name}`} />
-                  <AvatarFallback className="text-3xl font-semibold bg-gradient-to-br from-blue-500 to-cyan-500 text-white">
+                <Avatar className="w-20 h-20 border-4 border-primary/20">
+                  <AvatarImage src={astrologer?.profile_image} />
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-orange-500 text-white text-2xl">
                     {astrologer?.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
@@ -97,7 +97,7 @@ function Dashboard() {
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
                   <div className="space-y-2">
                     <div className="flex items-center gap-3 flex-wrap">
-                      <h1 className="text-3xl font-bold tracking-tight">{astrologer?.name}</h1>
+                      <h2 className="  font-bold tracking-tight">{astrologer?.name}</h2>
                       {astrologer?.isVerified && (
                         <Badge className="bg-emerald-500 hover:bg-emerald-600">
                           <Shield className="w-3 h-3 mr-1" />
@@ -118,7 +118,7 @@ function Dashboard() {
                     </div>
                   </div>
 
-                 
+
                 </div>
 
                 <div className="flex gap-2 flex-wrap">
@@ -129,23 +129,23 @@ function Dashboard() {
                   ))}
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   <StatCard
                     icon={Star}
                     label="Total"
-                    value={`${astrologer?.rating}/5.0`}
+                    value={`${astrologer?.rating | 0}/5.0`}
                     color="bg-gradient-to-br from-amber-400 to-orange-500"
                   />
                   <StatCard
                     icon={MessageSquare}
                     label="Chat Price"
-                    value={`₹${astrologer?.chatPrice}/min`}
+                    value={`₹${astrologer?.chatPrice | 0}/min`}
                     color="bg-gradient-to-br from-blue-500 to-cyan-500"
                   />
                   <StatCard
                     icon={PhoneCall}
                     label="Call Price"
-                    value={`₹${astrologer?.callPrice}/min`}
+                    value={`₹${astrologer?.callPrice | 0}/min`}
                     color="bg-gradient-to-br from-green-500 to-emerald-500"
                   />
                 </div>
@@ -254,7 +254,7 @@ function Dashboard() {
                 <InfoItem
                   icon={Star}
                   label="Total Reviews"
-                  value={astrologer?.ratingCount.toString()}
+                  value={astrologer?.ratingCount}
                 />
                 <InfoItem
                   icon={Clock}

@@ -14,26 +14,43 @@ import {
     Settings,
     User
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSidebar } from '../ui/sidebar';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { AstrologerProfile } from "@/redux/slice/AstroAuth";
+import { AstrologerLogout, AstrologerProfile } from "@/redux/slice/AstroAuth";
+import { toast } from "react-toastify";
 
 
 
 const NavbarAstro = () => {
     const { toggleSidebar } = useSidebar();
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { astrologer, loading } = useSelector(
         (state) => state.astroAuth
     );
-
+    const { token, user } = useSelector((state) => state.userAuth);
     useEffect(() => {
         if (!astrologer) {
             dispatch(AstrologerProfile());
         }
     }, [astrologer]);
+
+    const LogoutAstro = async () => {
+        toast.success('Astrologer logged out', {
+            position: "top-right",
+            autoClose: 5000,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+        });
+        await dispatch(AstrologerLogout()).unwrap();
+        localStorage.removeItem("token");
+        localStorage.removeItem("role_id");
+        navigate("/")
+        // await fatchAstrologers();
+    }
 
     return (
         <nav className="border-b bg-white sticky   top-0 z-50">
@@ -114,47 +131,43 @@ const NavbarAstro = () => {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                                     <Avatar className="h-10 w-10">
-                                        <AvatarImage src="" alt="User" />
+                                        <AvatarImage src={user?.avatar || astrologer?.avatar} alt={user?.username} />
                                         <AvatarFallback className="bg-purple-600 text-white">
-                                            AD
+                                            {astrologer?.username.charAt(0).toUpperCase() || user?.username.charAt(0).toUpperCase()}
                                         </AvatarFallback>
                                     </Avatar>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuContent align="end" className="w-auto">
                                 <DropdownMenuLabel>
                                     <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium">Admin User</p>
+                                        <p className="text-sm font-medium">{user?.username || astrologer?.username}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            admin@astrodash.com
+                                            {user?.email || astrologer?.email}
                                         </p>
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem asChild>
-                                    <Link to="/dashboard/profile" className="flex items-center cursor-pointer">
-                                        <User className="mr-2 h-4 w-4" />
-                                        Profile
-                                    </Link>
-                                </DropdownMenuItem>
+
                                 <DropdownMenuItem asChild>
                                     <Link to="/dashboard/settings" className="flex items-center cursor-pointer">
                                         <Settings className="mr-2 h-4 w-4" />
-                                        Settings
+                                        Back to Home
                                     </Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-red-600 cursor-pointer">
+                                {astrologer?.role_id === 2 && <DropdownMenuItem className="text-red-600 cursor-pointer" onClick={LogoutAstro}>
                                     <LogOut className="mr-2 h-4 w-4" />
                                     Log out
                                 </DropdownMenuItem>
+                                }
                             </DropdownMenuContent>
                         </DropdownMenu>
 
                     </div>
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 };
 
